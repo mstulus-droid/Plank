@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>160 Detik Core Transformation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --color-high: #E57373;
+            --color-low: #64B5F6;
+            --color-side-r: #81C784;
+            --color-side-l: #FFD54F;
+            --color-reverse-table: #BA68C8;
+            --color-reverse: #FFB74D;
+            --color-bear: #4DB6AC;
+            --color-boat: #F06292;
+            --color-rest: #95A5A6;
+            --bg-dark: #1a1a2e;
+            --bg-panel: #16213e;
+            --text-light: #eaeaea;
+            --accent: #0f3460;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Landscape enforcement */
+        @media screen and (orientation: portrait) {
+            .rotate-warning {
+                display: flex !important;
+            }
+            .app-container {
+                display: none !important;
+            }
+        }
+        
+        .rotate-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .rotate-warning h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .install-btn {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.15s, opacity 0.15s;
+        }
+        
+        .install-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .install-hint {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            display: none;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-radius: 12px;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        /* Left Panel - Timer & Controls Only */
+        .left-panel {
+            width: 42%;
+            background: var(--bg-panel);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-right: 2px solid var(--accent);
+            position: relative;
+            gap: 12px;
+        }
+        
+        .timer-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+        
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        
+        .timer-circle {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 8;
+        }
+        
+        .timer-progress {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.8rem;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .phase-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+        
+        .current-pose-card,
+        .next-preview,
+        .instruction-box {
+            display: none !important;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.15s, opacity 0.15s;
+            font-weight: 600;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .btn-settings {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1rem;
+        }
+        
+        /* Right Panel - Progress & Pose Visual */
+        .right-panel {
+            width: 58%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .progress-strip {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+        
+        .progress-item {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 3px;
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .progress-item.active {
+            background: currentColor;
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        .progress-item.completed {
+            background: #4ade80;
+        }
+        
+        .pose-info-panel {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .pose-info-box {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            min-width: 0;
+        }
+        
+        .pose-info-box.current {
+            border-left: 4px solid var(--color-high);
+        }
+        
+        .pose-info-box.next {
+            opacity: 0.7;
+        }
+        
+        .pose-info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .pose-info-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .pose-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            background: #fbf3dc;
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 0;
+        }
+        
+        .pose-visual-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        .tts-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: auto;
+        }
+        
+        .tts-indicator.active {
+            background: #10b981;
+            color: white;
+        }
+        
+        /* Start Screen Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+        
+        .overlay.hidden {
+            display: none;
+        }
+        
+        .start-content {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .start-content h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .start-content p {
+            margin-bottom: 30px;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .pose-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .pose-mini {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            border-left: 3px solid;
+        }
+        
+        .countdown-big {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: pulse 1s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* Settings Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-panel);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal h2 {
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .voice-test {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            accent-color: #667eea;
+        }
+        
+        /* Finish Screen */
+        .finish-content {
+            text-align: center;
+        }
+        
+        .finish-content h2 {
+            color: #4ade80;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Animations */
+        .breathing {
+            animation: breathe 4s ease-in-out infinite;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .pulse-ring {
+            display: none !important;
+        }
+        
+        /* Mobile / Small Screen Adjustments */
+        @media (max-height: 500px) and (orientation: landscape), (max-width: 768px) {
+            .left-panel {
+                width: 40%;
+                padding: 10px;
+                gap: 8px;
+            }
+            
+            .timer-container {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .timer-text {
+                font-size: 2.8rem;
+            }
+            
+            .timer-circle, .timer-progress {
+                stroke-width: 7;
+            }
+            
+            .phase-label {
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+            }
+            
+            .controls {
+                gap: 8px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .btn-settings {
+                top: 8px;
+                right: 8px;
+                padding: 6px;
+                font-size: 0.85rem;
+            }
+            
+            .right-panel {
+                width: 60%;
+                padding: 10px;
+            }
+            
+            .progress-strip {
+                margin-bottom: 10px;
+                padding: 6px;
+            }
+            
+            .progress-item {
+                height: 6px;
+                margin: 0 2px;
+            }
+            
+            .pose-info-panel {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .pose-info-box {
+                padding: 8px;
+                border-radius: 10px;
+            }
+            
+            .pose-info-label {
+                font-size: 0.6rem;
+            }
+            
+            .pose-info-name {
+                font-size: 0.9rem;
+            }
+            
+            .pose-visual {
+                padding: 12px;
+                border-radius: 12px;
+            }
+            
+            .pose-visual-img {
+                max-height: 140px;
+            }
+            
+            /* Overlay mobile fixes */
+            .start-content h1 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .start-content p {
+                font-size: 0.75rem;
+                margin-bottom: 10px;
+            }
+            
+            .pose-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+                margin-bottom: 10px;
+            }
+            
+            .pose-mini {
+                padding: 5px;
+                font-size: 0.6rem;
+                border-left-width: 2px;
+            }
+            
+            .finish-content h2 {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+            
+            .finish-content p {
+                font-size: 0.8rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                margin: 10px 0;
+            }
+            
+            .stat-box {
+                padding: 8px;
+            }
+            
+            .stat-value {
+                font-size: 1.1rem;
+            }
+            
+            .stat-label {
+                font-size: 0.6rem;
+            }
+            
+            .overlay {
+                padding: 10px;
+            }
+            
+            .countdown-big {
+                font-size: 3rem;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Rotate Warning -->
+    <div class="rotate-warning">
+        <div style="font-size: 3rem; margin-bottom: 20px;">📱</div>
+        <h2>Putar HP ke Landscape</h2>
+        <p>Aplikasi ini optimal digunakan dalam mode horizontal (landscape)</p>
+        
+        <button class="install-btn" id="installBtn" onclick="promptInstall()">⬇️ Install Aplikasi</button>
+        <div class="install-hint" id="iosHint">
+            📲 Tap <strong>Share</strong> lalu <strong>Add to Home Screen</strong> untuk install
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <button class="btn btn-settings" onclick="openSettings()">⚙️</button>
+            
+            <div class="timer-container">
+                <svg class="timer-svg" viewBox="0 0 100 100">
+                    <circle class="timer-circle" cx="50" cy="50" r="45"></circle>
+                    <circle class="timer-progress" id="progressCircle" cx="50" cy="50" r="45" 
+                            stroke-dasharray="283" stroke-dashoffset="0"></circle>
+                </svg>
+                <div class="timer-text" id="timerDisplay">20</div>
+                <div class="pulse-ring" id="pulseRing" style="display: none;"></div>
+            </div>
+            
+            <div class="phase-label" id="phaseLabel">Persiapan</div>
+            
+            <div class="current-pose-card" id="currentCard" style="border-color: var(--color-high);">
+                <div class="pose-number" id="poseNumber">Pose 1 dari 8</div>
+                <div class="pose-icon" id="poseIcon">🧘</div>
+                <div class="pose-title" id="poseTitle">High Plank</div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary hidden" id="btnPause" onclick="togglePause()">⏸️ Pause</button>
+                <button class="btn btn-primary" id="btnStart" onclick="startWorkout()">▶️ Mulai</button>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="progress-strip" id="progressStrip">
+                <!-- Generated by JS -->
+            </div>
+            
+            <!-- Pose info panel -->
+            <div class="pose-info-panel" id="poseInfoPanel">
+                <div class="pose-info-box current" id="currentPoseBox">
+                    <div class="pose-info-label">Saat Ini</div>
+                    <div class="pose-info-name" id="currentPoseNameMobile">High Plank</div>
+                </div>
+                <div class="pose-info-box next" id="nextPoseBox">
+                    <div class="pose-info-label">Selanjutnya</div>
+                    <div class="pose-info-name" id="nextPoseNameMobile">Low Plank</div>
+                </div>
+            </div>
+            
+            <!-- Pose visual -->
+            <div class="pose-visual" id="poseVisual">
+                <img class="pose-visual-img" id="poseVisualImg" src="" alt="Pose Illustration">
+            </div>
+            
+            <div class="next-preview" id="nextPreview">
+                <div>
+                    <div class="next-label">Selanjutnya</div>
+                    <div style="font-weight: bold;" id="nextPoseName">Low Plank</div>
+                </div>
+            </div>
+            
+            <div class="instruction-box" id="instructionBox">
+                <div class="instruction-title">
+                    <span>📋 Panduan Teknis</span>
+                    <span class="tts-indicator" id="ttsIndicator">
+                        🔊 TTS Aktif
+                    </span>
+                </div>
+                <div class="instruction-text" id="instructionText">
+                    Bertumpu pada telapak tangan dengan tangan lurus sejajar bahu. Jaga garis lurus dari kepala hingga tumit.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Overlay -->
+    <div class="overlay" id="startOverlay">
+        <div class="start-content">
+            <h1>160 Detik Core Transformation</h1>
+            <p>Rutinitas Dynamic Plank intensif dengan 8 variasi gerakan. 
+               Setiap pose 20 detik dengan jeda istirahat 15 detik antar pose.</p>
+            
+            <div class="pose-grid" id="poseGrid"></div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+                <span style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;">
+                    ⏱️ Total: 4 Menit 25 Detik
+                </span>
+                <span style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;">
+                    🔊 Suara Panduan
+                </span>
+            </div>
+            
+            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;" onclick="startCountdown()">
+                🚀 Mulai Latihan
+            </button>
+        </div>
+    </div>
+
+    <!-- Countdown Overlay -->
+    <div class="overlay hidden" id="countdownOverlay">
+        <div class="countdown-big" id="countdownNumber">3</div>
+        <p style="font-size: 1.2rem;">Bersiap...</p>
+    </div>
+
+    <!-- Finish Overlay -->
+    <div class="overlay hidden" id="finishOverlay">
+        <div class="finish-content">
+            <h2>🎉 Latihan Selesai!</h2>
+            <p>Core Transformation 160 detik berhasil dilakukan</p>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Pose</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalTimeStat">4:25</div>
+                    <div class="stat-label">Total Waktu</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">160</div>
+                    <div class="stat-label">Detik Aktif</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="resetWorkout()">🔄 Ulangi</button>
+        </div>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgmAudio" src="zimmer.MP3" loop></audio>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Edit Instruksi Suara (TTS)</h2>
+                <button class="close-btn" onclick="closeSettings()">×</button>
+            </div>
+            
+            <div style="margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem;">
+                <strong>💡 Tips:</strong> Edit teks di bawah untuk mengubah instruksi suara. 
+                Klik "Test" untuk preview. Perubahan tersimpan otomatis.
+            </div>
+
+            <div id="settingsContent"></div>
+            
+            <div class="voice-test">
+                <strong>Pengaturan Suara</strong>
+                <div class="volume-control">
+                    <span>Volume:</span>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+                    <span id="volumeValue">100%</span>
+                </div>
+                <div class="volume-control">
+                    <span>Kecepatan:</span>
+                    <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.1" value="0.9">
+                    <span id="rateValue">0.9x</span>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 10px; width: 100%;" onclick="testVoiceSettings()">
+                    🔊 Test Suara
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Pose (sesuai gambar)
+        const poses = [
+            {
+                id: 'high',
+                name: 'High Plank',
+                color: '#E57373',
+                icon: '🧘‍♂️',
+                image: '1_high_plank.png',
+                instruction: 'Bertumpu pada telapak tangan dengan tangan lurus sejajar bahu. Jaga garis lurus tubuh dari kepala hingga tumit. Core tetap kencang.',
+                tts: {
+                    start: "High Plank. Posisi telapak tangan lurus sejajar bahu. Mulai.",
+                    halfway: "Setengah waktu. Jaga core tetap aktif dan napas teratur.",
+                    end: "Selesai. Persiapkan diri untuk Low Plank."
+                }
+            },
+            {
+                id: 'low',
+                name: 'Low Plank',
+                color: '#64B5F6',
+                icon: '🛌',
+                image: '2_low_plank.png',
+                instruction: 'Posisi siku tepat di bawah bahu (forearm plank). Lengan bawah menempel lantai untuk stabilitas maksimal. Jaga garis lurus tubuh.',
+                tts: {
+                    start: "Low Plank. Siku tepat di bawah bahu. Stabilitas maksimal.",
+                    halfway: "Tahan posisi. Jangan biarkan pinggul turun atau naik terlalu tinggi.",
+                    end: "Selesai. Bersiap untuk Side Plank Kanan."
+                }
+            },
+            {
+                id: 'side_r',
+                name: 'Side Plank Kanan',
+                color: '#81C784',
+                icon: '➡️',
+                image: '3_side_plank_kanan.png',
+                instruction: 'Menghadap ke kanan, tumpuan pada satu sisi (siku atau tangan). Anggukan pinggul untuk melatih otot perut samping atau obliques.',
+                tts: {
+                    start: "Side Plank Kanan. Menghadap ke kanan. Angkat pinggul.",
+                    halfway: "Rasakan tekanan di sisi perut kanan. Tahan posisi.",
+                    end: "Selesai. Beralih ke Side Plank Kiri."
+                }
+            },
+            {
+                id: 'side_l',
+                name: 'Side Plank Kiri',
+                color: '#FFD54F',
+                icon: '⬅️',
+                image: '4_side_plank_kiri.png',
+                instruction: 'Ulangi posisi menyamping pada sisi kiri untuk keseimbangan kekuatan lateral. Pastikan bahu dan siku sejajar.',
+                tts: {
+                    start: "Side Plank Kiri. Sisi kiri untuk keseimbangan lateral.",
+                    halfway: "Keseimbangan kekuatan kiri dan kanan. Tahan.",
+                    end: "Selesai. Bersiap untuk Reverse Table Top."
+                }
+            },
+            {
+                id: 'reverse_table',
+                name: 'Reverse Table Top',
+                color: '#BA68C8',
+                icon: '🪑',
+                image: '5_reverse_table_top.png',
+                instruction: 'Posisi menghadap ke atas dengan lutut ditekuk 90 derajat. Tangan menopang dari belakang. Angkat panggul memperkuat core dan panggul.',
+                tts: {
+                    start: "Reverse Table Top. Menghadap ke atas. Lutut 90 derajat.",
+                    halfway: "Angkat panggul lebih tinggi. Rasakan kontraksi di core.",
+                    end: "Selesai. Menuju Reverse Plank."
+                }
+            },
+            {
+                id: 'reverse',
+                name: 'Reverse Plank',
+                color: '#FFB74D',
+                icon: '🌉',
+                image: '6_reverse_plank.png',
+                instruction: 'Posisi telentang dengan kaki lurus, tumit menekan lantai. Angkat panggul membentuk garis lurus. Melatih otot bagian belakang tubuh seperti bokong dan paha belakang.',
+                tts: {
+                    start: "Reverse Plank. Telentang, kaki lurus. Angkat panggul.",
+                    halfway: "Tahan garis lurus dari kepala hingga tumit. Core kencang.",
+                    end: "Selesai. Bersiap untuk Bear Pose."
+                }
+            },
+            {
+                id: 'bear',
+                name: 'Bear Pose',
+                color: '#4DB6AC',
+                icon: '🐻',
+                image: '7_bear_pose.png',
+                instruction: 'Posisi merangkak dengan lutut terangkat 5-10 cm dari lantai. Tangan lurus di bawah bahu. Core dalam aktif untuk stabilitas total.',
+                tts: {
+                    start: "Bear Pose. Merangkak, lutut terangkat dari lantai.",
+                    halfway: "Tahan lutut mengambang. Aktivasi perut dalam maksimal.",
+                    end: "Selesai. Pose terakhir, Boat Pose."
+                }
+            },
+            {
+                id: 'boat',
+                name: 'Boat Pose',
+                color: '#F06292',
+                icon: '⛵',
+                image: '8_boat_pose.png',
+                instruction: 'Duduk seimbang dengan kaki dan punggung terangkat membentuk huruf V. Tangan lurus ke depan untuk kontraksi core akhir yang maksimal.',
+                tts: {
+                    start: "Boat Pose. Duduk seimbang bentuk huruf V. Kontraksi akhir.",
+                    halfway: "Pose terakhir. Core kencang! Tahan V shape.",
+                    end: "Selesai. Latihan core transformation 160 detik berhasil!"
+                }
+            }
+        ];
+
+        // State
+        let currentPoseIndex = -1;
+        let isResting = false;
+        let timeLeft = 0;
+        let totalTime = 0;
+        let isPaused = false;
+        let timerInterval = null;
+        let isWorkoutActive = false;
+        let ttsEnabled = true;
+        let voiceVolume = 1.0;
+        let voiceRate = 0.9;
+        let deferredPrompt = null;
+        const BGM_NORMAL_VOLUME = 0.35;
+        const BGM_DIM_VOLUME = 0.06;
+        let bgmRestoreTimeout = null;
+        
+        // DOM Elements
+        const progressCircle = document.getElementById('progressCircle');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const phaseLabel = document.getElementById('phaseLabel');
+        const poseNumber = document.getElementById('poseNumber');
+        const poseTitle = document.getElementById('poseTitle');
+        const poseIcon = document.getElementById('poseIcon');
+        const currentCard = document.getElementById('currentCard');
+        const instructionText = document.getElementById('instructionText');
+        const nextPreview = document.getElementById('nextPreview');
+        const nextPoseName = document.getElementById('nextPoseName');
+        const currentPoseNameMobile = document.getElementById('currentPoseNameMobile');
+        const nextPoseNameMobile = document.getElementById('nextPoseNameMobile');
+        const currentPoseBox = document.getElementById('currentPoseBox');
+        const poseVisualImg = document.getElementById('poseVisualImg');
+        const ttsIndicator = document.getElementById('ttsIndicator');
+        const btnStart = document.getElementById('btnStart');
+        const btnPause = document.getElementById('btnPause');
+        const progressStrip = document.getElementById('progressStrip');
+        const pulseRing = document.getElementById('pulseRing');
+        const bgmAudio = document.getElementById('bgmAudio');
+        
+        // Initialize
+        function init() {
+            renderProgressStrip();
+            renderPoseGrid();
+            loadSettings();
+            checkInstallStatus();
+            
+            // Load saved TTS settings or use defaults
+            poses.forEach((pose, index) => {
+                const saved = localStorage.getItem(`tts_${pose.id}`);
+                if (saved) {
+                    pose.tts = JSON.parse(saved);
+                }
+            });
+            
+            // Set initial pose visual
+            if (poseVisualImg && poses[0].image) {
+                poseVisualImg.src = poses[0].image;
+            }
+            
+            // Volume and rate listeners
+            document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                voiceVolume = e.target.value;
+                document.getElementById('volumeValue').textContent = Math.round(voiceVolume * 100) + '%';
+            });
+            
+            document.getElementById('rateSlider').addEventListener('input', (e) => {
+                voiceRate = e.target.value;
+                document.getElementById('rateValue').textContent = voiceRate + 'x';
+            });
+        }
+        
+        function renderProgressStrip() {
+            progressStrip.innerHTML = '';
+            poses.forEach((pose, index) => {
+                const div = document.createElement('div');
+                div.className = 'progress-item';
+                div.style.color = pose.color;
+                div.id = `progress-${index}`;
+                progressStrip.appendChild(div);
+            });
+        }
+        
+        function renderPoseGrid() {
+            const grid = document.getElementById('poseGrid');
+            poses.forEach((pose, index) => {
+                const div = document.createElement('div');
+                div.className = 'pose-mini';
+                div.style.borderColor = pose.color;
+                div.innerHTML = `<strong>${index + 1}. ${pose.name}</strong><br><small>20 detik</small>`;
+                grid.appendChild(div);
+            });
+        }
+        
+        // TTS Functions
+        function dimBgm() {
+            if (!bgmAudio) return;
+            bgmAudio.volume = BGM_DIM_VOLUME;
+            if (bgmRestoreTimeout) clearTimeout(bgmRestoreTimeout);
+        }
+        
+        function restoreBgm() {
+            if (!bgmAudio) return;
+            bgmAudio.volume = BGM_NORMAL_VOLUME;
+            bgmRestoreTimeout = null;
+        }
+        
+        function scheduleBgmRestore(delay) {
+            if (bgmRestoreTimeout) clearTimeout(bgmRestoreTimeout);
+            bgmRestoreTimeout = setTimeout(restoreBgm, delay);
+        }
+        
+        function speak(text, priority = false, onEnd = null) {
+            if (!ttsEnabled || !text) {
+                if (onEnd) onEnd();
+                return;
+            }
+            
+            // Cancel previous speech if priority
+            if (priority) {
+                window.speechSynthesis.cancel();
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.volume = voiceVolume;
+            utterance.rate = voiceRate;
+            utterance.pitch = 1;
+            
+            const originalOnEnd = onEnd;
+            utterance.onend = (e) => {
+                restoreBgm();
+                if (originalOnEnd) originalOnEnd(e);
+            };
+            
+            // Try to find Indonesian voice
+            const voices = window.speechSynthesis.getVoices();
+            const indonesianVoice = voices.find(v => v.lang.includes('id')) || 
+                                   voices.find(v => v.lang.includes('ms')) ||
+                                   voices.find(v => v.lang.includes('en'));
+            if (indonesianVoice) {
+                utterance.voice = indonesianVoice;
+            }
+            
+            // Dim BGM before speaking
+            dimBgm();
+            // Fallback restore in case onend doesn't fire (e.g. cancelled)
+            const estimatedDuration = (text.length * 150) / voiceRate + 600;
+            scheduleBgmRestore(estimatedDuration);
+            
+            window.speechSynthesis.speak(utterance);
+            
+            // Visual indicator
+            ttsIndicator.classList.add('active');
+            setTimeout(() => ttsIndicator.classList.remove('active'), 1000);
+        }
+        
+        function announcePoseStart(index, onEnd) {
+            const pose = poses[index];
+            speak(pose.tts.start, true, onEnd);
+        }
+        
+        function announceRest() {
+            speak("Waktu istirahat. Atur napas. 15 detik.", true);
+        }
+        
+        function announceRestCountdown(num) {
+            speak(`${num}`, true);
+        }
+        
+        // Timer Logic
+        function startCountdown() {
+            // Start background music
+            if (bgmAudio) {
+                bgmAudio.volume = BGM_NORMAL_VOLUME;
+                bgmAudio.play().catch(err => console.log('BGM play blocked', err));
+            }
+            
+            document.getElementById('startOverlay').classList.add('hidden');
+            document.getElementById('countdownOverlay').classList.remove('hidden');
+            
+            let count = 3;
+            const countEl = document.getElementById('countdownNumber');
+            countEl.textContent = count;
+            speak(`${count}`, true);
+            
+            const countInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countEl.textContent = count;
+                    speak(`${count}`, true);
+                } else {
+                    clearInterval(countInterval);
+                    document.getElementById('countdownOverlay').classList.add('hidden');
+                    startWorkout();
+                }
+            }, 1000);
+        }
+        
+        function startWorkout() {
+            isWorkoutActive = true;
+            currentPoseIndex = 0;
+            isResting = false;
+            isPaused = false;
+            btnStart.classList.add('hidden');
+            btnPause.classList.remove('hidden');
+            
+            // Request wake lock if available
+            if ('wakeLock' in navigator) {
+                navigator.wakeLock.request('screen').catch(err => console.log('Wake lock denied'));
+            }
+            
+            startPose(0);
+        }
+        
+        function startPose(index) {
+            currentPoseIndex = index;
+            const pose = poses[index];
+            timeLeft = 20;
+            totalTime = 20;
+            isResting = false;
+            
+            // Update UI
+            updatePoseDisplay(pose);
+            updateProgress(index);
+            nextPreview.style.opacity = index < 7 ? '0.7' : '0';
+            if (index < 7) {
+                nextPoseName.textContent = poses[index + 1].name;
+                if (nextPoseNameMobile) nextPoseNameMobile.textContent = poses[index + 1].name;
+            } else {
+                if (nextPoseNameMobile) nextPoseNameMobile.textContent = 'Selesai';
+            }
+            
+            // Visuals
+            currentCard.style.borderColor = pose.color;
+            progressCircle.style.stroke = pose.color;
+            phaseLabel.textContent = `Pose ${index + 1} dari 8`;
+            pulseRing.style.display = 'block';
+            pulseRing.style.borderColor = pose.color;
+            
+            // TTS - start timer only after announcement finishes
+            announcePoseStart(index, () => {
+                startTimer();
+                
+                // 10-second mark announcement
+                setTimeout(() => {
+                    if (!isPaused && isWorkoutActive && currentPoseIndex === index && !isResting) {
+                        speak("10 detik");
+                    }
+                }, 10000);
+            });
+        }
+        
+        function startRest() {
+            isResting = true;
+            timeLeft = 15; // Jeda 15 detik
+            totalTime = 15;
+            
+            phaseLabel.textContent = "Istirahat";
+            timerDisplay.textContent = "15";
+            poseTitle.textContent = "Recovery";
+            poseIcon.textContent = "😮‍💨";
+            poseNumber.textContent = "Jeda antar pose";
+            instructionText.textContent = "Atur napas. Tarik napas dalam-dalam melalui hidung, hembuskan melalui mulut. Bersiap untuk pose berikutnya.";
+            
+            // Visual elements update during rest
+            if (currentPoseNameMobile) currentPoseNameMobile.textContent = "Istirahat";
+            if (poseVisualImg) poseVisualImg.src = "";
+            if (currentPoseBox) currentPoseBox.style.borderLeftColor = 'var(--color-rest)';
+            
+            currentCard.style.borderColor = 'var(--color-rest)';
+            progressCircle.style.stroke = 'var(--color-rest)';
+            pulseRing.style.display = 'none';
+            
+            announceRest();
+            
+            // Countdown 3-2-1 at end of rest
+            setTimeout(() => announceRestCountdown(3), 12000);
+            setTimeout(() => announceRestCountdown(2), 13000);
+            setTimeout(() => announceRestCountdown(1), 14000);
+            
+            startTimer();
+        }
+        
+        function startTimer() {
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                if (!isPaused) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        handlePhaseEnd();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            timerDisplay.textContent = timeLeft;
+            
+            // Circle progress
+            const circumference = 2 * Math.PI * 45; // r=45
+            const offset = circumference - (timeLeft / totalTime) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+            
+            // Sound alerts at last 5 seconds
+            if (timeLeft <= 5 && timeLeft > 1) {
+                playBeep();
+            } else if (timeLeft === 1) {
+                playRelieve();
+            }
+        }
+        
+        function updatePoseDisplay(pose) {
+            poseNumber.textContent = `Pose ${currentPoseIndex + 1} dari 8`;
+            poseTitle.textContent = pose.name;
+            poseIcon.textContent = pose.icon;
+            instructionText.textContent = pose.instruction;
+            
+            // Visual elements
+            if (currentPoseNameMobile) currentPoseNameMobile.textContent = pose.name;
+            if (poseVisualImg && pose.image) {
+                poseVisualImg.src = pose.image;
+            }
+            if (currentPoseBox && pose.color) {
+                currentPoseBox.style.borderLeftColor = pose.color;
+            }
+        }
+        
+        function playBeep() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.15);
+            } catch (e) {
+                console.log('Audio beep failed', e);
+            }
+        }
+        
+        function playRelieve() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(523.25, ctx.currentTime);
+                gain1.gain.setValueAtTime(0, ctx.currentTime);
+                gain1.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+                gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                osc1.start(ctx.currentTime);
+                osc1.stop(ctx.currentTime + 0.5);
+                
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                gain2.gain.setValueAtTime(0, ctx.currentTime + 0.1);
+                gain2.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.15);
+                gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.7);
+                osc2.start(ctx.currentTime + 0.1);
+                osc2.stop(ctx.currentTime + 0.7);
+            } catch (e) {
+                console.log('Audio relieve failed', e);
+            }
+        }
+        
+        function updateProgress(index) {
+            // Mark previous as completed
+            for (let i = 0; i < index; i++) {
+                document.getElementById(`progress-${i}`).classList.add('completed');
+                document.getElementById(`progress-${i}`).classList.remove('active');
+            }
+            // Current active
+            const current = document.getElementById(`progress-${index}`);
+            current.classList.add('active');
+            current.classList.remove('completed');
+        }
+        
+        function handlePhaseEnd() {
+            if (!isResting) {
+                // End of pose - no end narration
+                if (currentPoseIndex < 7) {
+                    // Start rest before next pose
+                    startRest();
+                } else {
+                    // Workout complete
+                    finishWorkout();
+                }
+            } else {
+                // End of rest, start next pose
+                startPose(currentPoseIndex + 1);
+            }
+        }
+        
+        function togglePause() {
+            isPaused = !isPaused;
+            btnPause.innerHTML = isPaused ? '▶️ Lanjut' : '⏸️ Pause';
+            
+            if (isPaused) {
+                window.speechSynthesis.pause();
+                phaseLabel.textContent += " (Dijeda)";
+            } else {
+                window.speechSynthesis.resume();
+                phaseLabel.textContent = phaseLabel.textContent.replace(" (Dijeda)", "");
+            }
+        }
+        
+        function finishWorkout() {
+            isWorkoutActive = false;
+            clearInterval(timerInterval);
+            if (bgmAudio) {
+                bgmAudio.pause();
+                bgmAudio.currentTime = 0;
+            }
+            document.getElementById('finishOverlay').classList.remove('hidden');
+            speak("Selamat! Latihan core transformation 160 detik berhasil diselesaikan. Istirahat dan rehidrasi.", true);
+        }
+        
+        function resetWorkout() {
+            document.getElementById('finishOverlay').classList.add('hidden');
+            document.getElementById('startOverlay').classList.remove('hidden');
+            btnStart.classList.remove('hidden');
+            btnPause.classList.add('hidden');
+            if (bgmAudio) {
+                bgmAudio.pause();
+                bgmAudio.currentTime = 0;
+            }
+            
+            // Reset displays
+            timerDisplay.textContent = "20";
+            progressCircle.style.strokeDashoffset = 0;
+            currentPoseIndex = -1;
+            phaseLabel.textContent = "Persiapan";
+            if (poseVisualImg && poses[0].image) {
+                poseVisualImg.src = poses[0].image;
+            }
+            if (currentPoseNameMobile) currentPoseNameMobile.textContent = poses[0].name;
+            if (nextPoseNameMobile && poses[1]) nextPoseNameMobile.textContent = poses[1].name;
+            
+            // Clear progress strip
+            document.querySelectorAll('.progress-item').forEach(el => {
+                el.classList.remove('completed', 'active');
+            });
+        }
+        
+        // Settings Functions
+        function openSettings() {
+            const modal = document.getElementById('settingsModal');
+            const content = document.getElementById('settingsContent');
+            
+            content.innerHTML = '';
+            poses.forEach((pose, index) => {
+                const group = document.createElement('div');
+                group.style.marginBottom = '20px';
+                group.style.padding = '15px';
+                group.style.background = 'rgba(255,255,255,0.03)';
+                group.style.borderRadius = '12px';
+                group.style.borderLeft = `4px solid ${pose.color}`;
+                
+                group.innerHTML = `
+                    <h3 style="margin-bottom: 10px; color: ${pose.color};">${index + 1}. ${pose.name}</h3>
+                    
+                    <div class="form-group">
+                        <label>Start Pose:</label>
+                        <textarea id="tts-${pose.id}-start">${pose.tts.start}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Halfway (10 detik):</label>
+                        <textarea id="tts-${pose.id}-halfway">${pose.tts.halfway}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>End Pose:</label>
+                        <textarea id="tts-${pose.id}-end">${pose.tts.end}</textarea>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="testPoseTTS('${pose.id}')">
+                        🔊 Test Suara Pose Ini
+                    </button>
+                `;
+                
+                content.appendChild(group);
+            });
+            
+            modal.classList.add('active');
+        }
+        
+        function closeSettings() {
+            // Save settings
+            poses.forEach(pose => {
+                pose.tts.start = document.getElementById(`tts-${pose.id}-start`).value;
+                pose.tts.halfway = document.getElementById(`tts-${pose.id}-halfway`).value;
+                pose.tts.end = document.getElementById(`tts-${pose.id}-end`).value;
+                
+                localStorage.setItem(`tts_${pose.id}`, JSON.stringify(pose.tts));
+            });
+            
+            localStorage.setItem('voiceVolume', voiceVolume);
+            localStorage.setItem('voiceRate', voiceRate);
+            
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+        
+        function testPoseTTS(poseId) {
+            const pose = poses.find(p => p.id === poseId);
+            const startText = document.getElementById(`tts-${poseId}-start`).value;
+            speak(startText, true);
+        }
+        
+        function testVoiceSettings() {
+            speak("Ini adalah contoh suara panduan plank trainer. Sesuaikan volume dan kecepatan sesuai preferensi Anda.", true);
+        }
+        
+        function loadSettings() {
+            const savedVol = localStorage.getItem('voiceVolume');
+            const savedRate = localStorage.getItem('voiceRate');
+            
+            if (savedVol !== null) {
+                voiceVolume = parseFloat(savedVol);
+                document.getElementById('volumeSlider').value = voiceVolume;
+                document.getElementById('volumeValue').textContent = Math.round(voiceVolume * 100) + '%';
+            }
+            
+            if (savedRate !== null) {
+                voiceRate = parseFloat(savedRate);
+                document.getElementById('rateSlider').value = voiceRate;
+                document.getElementById('rateValue').textContent = voiceRate + 'x';
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isWorkoutActive) togglePause();
+            }
+        });
+        
+        // PWA Install detection
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            checkInstallStatus();
+        });
+        
+        function checkInstallStatus() {
+            const installBtn = document.getElementById('installBtn');
+            const iosHint = document.getElementById('iosHint');
+            
+            // Check if already running as installed PWA
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            if (isStandalone) {
+                // Already installed and running from home screen
+                installBtn.style.display = 'none';
+                iosHint.style.display = 'none';
+                return;
+            }
+            
+            // Not in standalone mode - show install option if available
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            if (deferredPrompt) {
+                // Android/Chrome supports beforeinstallprompt
+                installBtn.style.display = 'inline-flex';
+                iosHint.style.display = 'none';
+            } else if (isIOS) {
+                // iOS Safari hint
+                installBtn.style.display = 'none';
+                iosHint.style.display = 'block';
+            } else {
+                // Other browsers - hide both or show button if we want
+                installBtn.style.display = 'none';
+                iosHint.style.display = 'none';
+            }
+        }
+        
+        async function promptInstall() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                deferredPrompt = null;
+                checkInstallStatus();
+            }
+        }
+        
+        // Init
+        window.addEventListener('load', init);
+        
+        // Prevent screen sleep (fallback)
+        setInterval(() => {
+            if (isWorkoutActive && !isPaused) {
+                // Keep screen alive trick
+                document.title = document.title;
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
