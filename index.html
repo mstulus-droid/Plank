@@ -369,7 +369,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         .pose-mini {
@@ -378,6 +378,106 @@
             border-radius: 8px;
             font-size: 0.8rem;
             border-left: 3px solid;
+            position: relative;
+            text-align: left;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .pose-mini.disabled {
+            opacity: 0.4;
+        }
+        
+        .pose-check {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .time-selector {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .time-btn {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid transparent;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 44px;
+        }
+        
+        .time-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .time-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .toggle-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .icon-toggle {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid transparent;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .icon-toggle:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .icon-toggle.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .icon-toggle.inactive {
+            opacity: 0.5;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .total-time-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .total-time-bar span {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
         }
         
         .countdown-big {
@@ -632,15 +732,39 @@
             }
             
             .pose-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 5px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
                 margin-bottom: 10px;
             }
             
             .pose-mini {
-                padding: 5px;
-                font-size: 0.6rem;
+                padding: 8px;
+                font-size: 0.7rem;
                 border-left-width: 2px;
+            }
+            
+            .pose-check {
+                top: 6px;
+                right: 6px;
+                width: 14px;
+                height: 14px;
+            }
+            
+            .time-btn {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+                min-width: 36px;
+            }
+            
+            .icon-toggle {
+                width: 42px;
+                height: 42px;
+                font-size: 1.2rem;
+            }
+            
+            .total-time-bar span {
+                padding: 8px 14px;
+                font-size: 0.9rem;
             }
             
             .finish-content h2 {
@@ -771,22 +895,20 @@
     <!-- Start Overlay -->
     <div class="overlay" id="startOverlay">
         <div class="start-content">
-            <h1>160 Detik Core Transformation</h1>
-            <p>Rutinitas Dynamic Plank intensif dengan 8 variasi gerakan. 
-               Setiap pose 20 detik dengan jeda istirahat 15 detik antar pose.</p>
+            <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 6px;">Durasi Pose</div>
+            <div class="time-selector" id="timeSelector"></div>
+            
+            <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 6px; margin-top: 10px;">Durasi Jeda</div>
+            <div class="time-selector" id="restSelector"></div>
+            
+            <div class="toggle-row">
+                <button class="icon-toggle active" id="voiceToggle" onclick="toggleVoice()" title="Suara Panduan">🔊</button>
+                <button class="icon-toggle active" id="musicToggle" onclick="toggleMusic()" title="Musik">🎵</button>
+            </div>
             
             <div class="pose-grid" id="poseGrid"></div>
             
-            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
-                <span style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;">
-                    ⏱️ Total: 4 Menit 25 Detik
-                </span>
-                <span style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;">
-                    🔊 Suara Panduan
-                </span>
-            </div>
-            
-            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px;" onclick="startCountdown()">
+            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px; margin: 0 auto; display: flex;" onclick="startCountdown()">
                 🚀 Mulai Latihan
             </button>
         </div>
@@ -806,7 +928,7 @@
             
             <div class="stats">
                 <div class="stat-box">
-                    <div class="stat-value">8</div>
+                    <div class="stat-value" id="finishPoseCount">8</div>
                     <div class="stat-label">Pose</div>
                 </div>
                 <div class="stat-box">
@@ -814,12 +936,12 @@
                     <div class="stat-label">Total Waktu</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value">160</div>
+                    <div class="stat-value" id="activeTimeStat">160</div>
                     <div class="stat-label">Detik Aktif</div>
                 </div>
             </div>
             
-            <button class="btn btn-primary" onclick="resetWorkout()">🔄 Ulangi</button>
+            <button class="btn btn-primary" style="margin: 0 auto; display: flex;" onclick="resetWorkout()">🔄 Ulangi</button>
         </div>
     </div>
 
@@ -830,7 +952,7 @@
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>⚙️ Edit Instruksi Suara (TTS)</h2>
+                <h2>⚙️ Edit Instruksi Suara</h2>
                 <button class="close-btn" onclick="closeSettings()">×</button>
             </div>
             
@@ -871,10 +993,8 @@
                 image: '1_high_plank.png',
                 instruction: 'Bertumpu pada telapak tangan dengan tangan lurus sejajar bahu. Jaga garis lurus tubuh dari kepala hingga tumit. Core tetap kencang.',
                 tts: {
-                    start: "High Plank. Posisi telapak tangan lurus sejajar bahu. Mulai.",
-                    halfway: "Setengah waktu. Jaga core tetap aktif dan napas teratur.",
-                    end: "Selesai. Persiapkan diri untuk Low Plank."
-                }
+                    start: "High pleng. Posisi telapak tangan lurus sejajar bahu. Mulai."
+                    }
             },
             {
                 id: 'low',
@@ -884,10 +1004,8 @@
                 image: '2_low_plank.png',
                 instruction: 'Posisi siku tepat di bawah bahu (forearm plank). Lengan bawah menempel lantai untuk stabilitas maksimal. Jaga garis lurus tubuh.',
                 tts: {
-                    start: "Low Plank. Siku tepat di bawah bahu. Stabilitas maksimal.",
-                    halfway: "Tahan posisi. Jangan biarkan pinggul turun atau naik terlalu tinggi.",
-                    end: "Selesai. Bersiap untuk Side Plank Kanan."
-                }
+                    start: "Low pleng. Siku tepat di bawah bahu. Stabilitas maksimal. Mulai."
+                    }
             },
             {
                 id: 'side_r',
@@ -897,10 +1015,8 @@
                 image: '3_side_plank_kanan.png',
                 instruction: 'Menghadap ke kanan, tumpuan pada satu sisi (siku atau tangan). Anggukan pinggul untuk melatih otot perut samping atau obliques.',
                 tts: {
-                    start: "Side Plank Kanan. Menghadap ke kanan. Angkat pinggul.",
-                    halfway: "Rasakan tekanan di sisi perut kanan. Tahan posisi.",
-                    end: "Selesai. Beralih ke Side Plank Kiri."
-                }
+                    start: "Side pleng Kanan. Menghadap ke kanan. Angkat pinggul. Mulai."
+                    }
             },
             {
                 id: 'side_l',
@@ -910,10 +1026,8 @@
                 image: '4_side_plank_kiri.png',
                 instruction: 'Ulangi posisi menyamping pada sisi kiri untuk keseimbangan kekuatan lateral. Pastikan bahu dan siku sejajar.',
                 tts: {
-                    start: "Side Plank Kiri. Sisi kiri untuk keseimbangan lateral.",
-                    halfway: "Keseimbangan kekuatan kiri dan kanan. Tahan.",
-                    end: "Selesai. Bersiap untuk Reverse Table Top."
-                }
+                    start: "Side pleng Kiri. Mengharap ke kiri. Angkat pinggul. Mulai."
+                    }
             },
             {
                 id: 'reverse_table',
@@ -923,10 +1037,8 @@
                 image: '5_reverse_table_top.png',
                 instruction: 'Posisi menghadap ke atas dengan lutut ditekuk 90 derajat. Tangan menopang dari belakang. Angkat panggul memperkuat core dan panggul.',
                 tts: {
-                    start: "Reverse Table Top. Menghadap ke atas. Lutut 90 derajat.",
-                    halfway: "Angkat panggul lebih tinggi. Rasakan kontraksi di core.",
-                    end: "Selesai. Menuju Reverse Plank."
-                }
+                    start: "Reverse Tabell Top. Menghadap ke atas. Lutut 90 derajat. Mulai."
+                    }
             },
             {
                 id: 'reverse',
@@ -936,10 +1048,8 @@
                 image: '6_reverse_plank.png',
                 instruction: 'Posisi telentang dengan kaki lurus, tumit menekan lantai. Angkat panggul membentuk garis lurus. Melatih otot bagian belakang tubuh seperti bokong dan paha belakang.',
                 tts: {
-                    start: "Reverse Plank. Telentang, kaki lurus. Angkat panggul.",
-                    halfway: "Tahan garis lurus dari kepala hingga tumit. Core kencang.",
-                    end: "Selesai. Bersiap untuk Bear Pose."
-                }
+                    start: "Reverse pleng. Telentang, kaki lurus. Angkat panggul. Mulai."
+                    }
             },
             {
                 id: 'bear',
@@ -949,10 +1059,8 @@
                 image: '7_bear_pose.png',
                 instruction: 'Posisi merangkak dengan lutut terangkat 5-10 cm dari lantai. Tangan lurus di bawah bahu. Core dalam aktif untuk stabilitas total.',
                 tts: {
-                    start: "Bear Pose. Merangkak, lutut terangkat dari lantai.",
-                    halfway: "Tahan lutut mengambang. Aktivasi perut dalam maksimal.",
-                    end: "Selesai. Pose terakhir, Boat Pose."
-                }
+                    start: "Beerr Poss. Merangkak, lutut terangkat dari lantai. Mulai."
+                    }
             },
             {
                 id: 'boat',
@@ -962,10 +1070,8 @@
                 image: '8_boat_pose.png',
                 instruction: 'Duduk seimbang dengan kaki dan punggung terangkat membentuk huruf V. Tangan lurus ke depan untuk kontraksi core akhir yang maksimal.',
                 tts: {
-                    start: "Boat Pose. Duduk seimbang bentuk huruf V. Kontraksi akhir.",
-                    halfway: "Pose terakhir. Core kencang! Tahan V shape.",
-                    end: "Selesai. Latihan core transformation 160 detik berhasil!"
-                }
+                    start: "Boat Poss. Duduk seimbang bentuk huruf V. Kontraksi akhir. Mulai."
+                    }
             }
         ];
 
@@ -978,12 +1084,17 @@
         let timerInterval = null;
         let isWorkoutActive = false;
         let ttsEnabled = true;
+        let musicEnabled = true;
         let voiceVolume = 1.0;
         let voiceRate = 0.9;
         let deferredPrompt = null;
         const BGM_NORMAL_VOLUME = 0.35;
         const BGM_DIM_VOLUME = 0.06;
         let bgmRestoreTimeout = null;
+        let poseDuration = 20;
+        let restDuration = 15;
+        let enabledPoseIds = poses.map(p => p.id);
+        let workoutPoses = [];
         
         // DOM Elements
         const progressCircle = document.getElementById('progressCircle');
@@ -1009,23 +1120,40 @@
         
         // Initialize
         function init() {
+            loadAppSettings();
+            renderTimeSelector();
+            renderRestSelector();
             renderProgressStrip();
             renderPoseGrid();
             loadSettings();
             checkInstallStatus();
             
             // Load saved TTS settings or use defaults
-            poses.forEach((pose, index) => {
+            poses.forEach((pose) => {
                 const saved = localStorage.getItem(`tts_${pose.id}`);
                 if (saved) {
-                    pose.tts = JSON.parse(saved);
+                    const savedObj = JSON.parse(saved);
+                    if (savedObj.start) pose.tts.start = savedObj.start;
                 }
+                // Normalize pronunciation
+                pose.tts.start = pose.tts.start.replace(/plank/gi, 'pleng');
+            });
+            
+            // Close settings modal when clicking outside
+            document.getElementById('settingsModal').addEventListener('click', (e) => {
+                if (e.target.id === 'settingsModal') closeSettings();
             });
             
             // Set initial pose visual
-            if (poseVisualImg && poses[0].image) {
-                poseVisualImg.src = poses[0].image;
+            const firstEnabled = poses.find(p => enabledPoseIds.includes(p.id));
+            if (poseVisualImg && firstEnabled && firstEnabled.image) {
+                poseVisualImg.src = firstEnabled.image;
             }
+            if (currentPoseNameMobile && firstEnabled) {
+                currentPoseNameMobile.textContent = firstEnabled.name;
+            }
+            
+            timerDisplay.textContent = poseDuration;
             
             // Volume and rate listeners
             document.getElementById('volumeSlider').addEventListener('input', (e) => {
@@ -1039,9 +1167,52 @@
             });
         }
         
+        function saveAppSettings() {
+            localStorage.setItem('poseDuration', poseDuration);
+            localStorage.setItem('restDuration', restDuration);
+            localStorage.setItem('ttsEnabled', JSON.stringify(ttsEnabled));
+            localStorage.setItem('musicEnabled', JSON.stringify(musicEnabled));
+            localStorage.setItem('enabledPoseIds', JSON.stringify(enabledPoseIds));
+        }
+        
+        function loadAppSettings() {
+            const savedPoseDuration = localStorage.getItem('poseDuration');
+            if (savedPoseDuration !== null) poseDuration = parseInt(savedPoseDuration, 10);
+            
+            const savedRestDuration = localStorage.getItem('restDuration');
+            if (savedRestDuration !== null) restDuration = parseInt(savedRestDuration, 10);
+            
+            const savedTts = localStorage.getItem('ttsEnabled');
+            if (savedTts !== null) ttsEnabled = JSON.parse(savedTts);
+            
+            const savedMusic = localStorage.getItem('musicEnabled');
+            if (savedMusic !== null) musicEnabled = JSON.parse(savedMusic);
+            
+            const savedEnabled = localStorage.getItem('enabledPoseIds');
+            if (savedEnabled !== null) {
+                const parsed = JSON.parse(savedEnabled);
+                if (parsed.length > 0) enabledPoseIds = parsed;
+            }
+            
+            // Update toggle buttons visuals
+            const voiceBtn = document.getElementById('voiceToggle');
+            if (voiceBtn) {
+                voiceBtn.textContent = ttsEnabled ? '🔊' : '🔇';
+                voiceBtn.classList.toggle('active', ttsEnabled);
+                voiceBtn.classList.toggle('inactive', !ttsEnabled);
+            }
+            const musicBtn = document.getElementById('musicToggle');
+            if (musicBtn) {
+                musicBtn.textContent = musicEnabled ? '🎵' : '🔕';
+                musicBtn.classList.toggle('active', musicEnabled);
+                musicBtn.classList.toggle('inactive', !musicEnabled);
+            }
+        }
+        
         function renderProgressStrip() {
             progressStrip.innerHTML = '';
-            poses.forEach((pose, index) => {
+            const activePoses = poses.filter(p => enabledPoseIds.includes(p.id));
+            activePoses.forEach((pose, index) => {
                 const div = document.createElement('div');
                 div.className = 'progress-item';
                 div.style.color = pose.color;
@@ -1052,13 +1223,88 @@
         
         function renderPoseGrid() {
             const grid = document.getElementById('poseGrid');
+            grid.innerHTML = '';
             poses.forEach((pose, index) => {
                 const div = document.createElement('div');
-                div.className = 'pose-mini';
+                const isChecked = enabledPoseIds.includes(pose.id);
+                div.className = 'pose-mini' + (isChecked ? '' : ' disabled');
                 div.style.borderColor = pose.color;
-                div.innerHTML = `<strong>${index + 1}. ${pose.name}</strong><br><small>20 detik</small>`;
+                div.innerHTML = `
+                    <input type="checkbox" class="pose-check" ${isChecked ? 'checked' : ''} data-id="${pose.id}">
+                    <strong>${index + 1}. ${pose.name}</strong><br><small class="pose-time">${poseDuration} detik</small>
+                `;
+                div.querySelector('.pose-check').addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        if (!enabledPoseIds.includes(pose.id)) enabledPoseIds.push(pose.id);
+                        div.classList.remove('disabled');
+                    } else {
+                        enabledPoseIds = enabledPoseIds.filter(id => id !== pose.id);
+                        div.classList.add('disabled');
+                    }
+                    enabledPoseIds = poses.map(p => p.id).filter(id => enabledPoseIds.includes(id));
+                    renderProgressStrip();
+                    saveAppSettings();
+                });
                 grid.appendChild(div);
             });
+        }
+        
+        function renderTimeSelector() {
+            const container = document.getElementById('timeSelector');
+            const options = [20, 25, 30, 35, 40, 45, 50, 55, 60];
+            container.innerHTML = '';
+            options.forEach(sec => {
+                const btn = document.createElement('button');
+                btn.className = 'time-btn' + (sec === poseDuration ? ' active' : '');
+                btn.textContent = sec + 'd';
+                btn.onclick = () => {
+                    poseDuration = sec;
+                    container.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderPoseGrid();
+                    saveAppSettings();
+                };
+                container.appendChild(btn);
+            });
+        }
+        
+        function renderRestSelector() {
+            const container = document.getElementById('restSelector');
+            const options = [5, 10, 15, 20];
+            container.innerHTML = '';
+            options.forEach(sec => {
+                const btn = document.createElement('button');
+                btn.className = 'time-btn' + (sec === restDuration ? ' active' : '');
+                btn.textContent = sec + 'd';
+                btn.onclick = () => {
+                    restDuration = sec;
+                    container.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    saveAppSettings();
+                };
+                container.appendChild(btn);
+            });
+        }
+        
+        function toggleVoice() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.getElementById('voiceToggle');
+            btn.textContent = ttsEnabled ? '🔊' : '🔇';
+            btn.classList.toggle('active', ttsEnabled);
+            btn.classList.toggle('inactive', !ttsEnabled);
+            saveAppSettings();
+        }
+        
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            const btn = document.getElementById('musicToggle');
+            btn.textContent = musicEnabled ? '🎵' : '🔕';
+            btn.classList.toggle('active', musicEnabled);
+            btn.classList.toggle('inactive', !musicEnabled);
+            if (!musicEnabled && bgmAudio) {
+                bgmAudio.pause();
+            }
+            saveAppSettings();
         }
         
         // TTS Functions
@@ -1125,12 +1371,12 @@
         }
         
         function announcePoseStart(index, onEnd) {
-            const pose = poses[index];
+            const pose = workoutPoses[index];
             speak(pose.tts.start, true, onEnd);
         }
         
         function announceRest() {
-            speak("Waktu istirahat. Atur napas. 15 detik.", true);
+            speak("Berhenti sejenak, atur nafas.", true);
         }
         
         function announceRestCountdown(num) {
@@ -1139,8 +1385,10 @@
         
         // Timer Logic
         function startCountdown() {
+            if (enabledPoseIds.length === 0) return;
+            
             // Start background music
-            if (bgmAudio) {
+            if (bgmAudio && musicEnabled) {
                 bgmAudio.volume = BGM_NORMAL_VOLUME;
                 bgmAudio.play().catch(err => console.log('BGM play blocked', err));
             }
@@ -1151,13 +1399,13 @@
             let count = 3;
             const countEl = document.getElementById('countdownNumber');
             countEl.textContent = count;
-            speak(`${count}`, true);
+            if (ttsEnabled) speak(`${count}`, true);
             
             const countInterval = setInterval(() => {
                 count--;
                 if (count > 0) {
                     countEl.textContent = count;
-                    speak(`${count}`, true);
+                    if (ttsEnabled) speak(`${count}`, true);
                 } else {
                     clearInterval(countInterval);
                     document.getElementById('countdownOverlay').classList.add('hidden');
@@ -1168,6 +1416,7 @@
         
         function startWorkout() {
             isWorkoutActive = true;
+            workoutPoses = poses.filter(p => enabledPoseIds.includes(p.id));
             currentPoseIndex = 0;
             isResting = false;
             isPaused = false;
@@ -1184,18 +1433,18 @@
         
         function startPose(index) {
             currentPoseIndex = index;
-            const pose = poses[index];
-            timeLeft = 20;
-            totalTime = 20;
+            const pose = workoutPoses[index];
+            timeLeft = poseDuration;
+            totalTime = poseDuration;
             isResting = false;
             
             // Update UI
             updatePoseDisplay(pose);
             updateProgress(index);
-            nextPreview.style.opacity = index < 7 ? '0.7' : '0';
-            if (index < 7) {
-                nextPoseName.textContent = poses[index + 1].name;
-                if (nextPoseNameMobile) nextPoseNameMobile.textContent = poses[index + 1].name;
+            nextPreview.style.opacity = index < workoutPoses.length - 1 ? '0.7' : '0';
+            if (index < workoutPoses.length - 1) {
+                nextPoseName.textContent = workoutPoses[index + 1].name;
+                if (nextPoseNameMobile) nextPoseNameMobile.textContent = workoutPoses[index + 1].name;
             } else {
                 if (nextPoseNameMobile) nextPoseNameMobile.textContent = 'Selesai';
             }
@@ -1203,38 +1452,31 @@
             // Visuals
             currentCard.style.borderColor = pose.color;
             progressCircle.style.stroke = pose.color;
-            phaseLabel.textContent = `Pose ${index + 1} dari 8`;
+            phaseLabel.textContent = `Pose ${index + 1} dari ${workoutPoses.length}`;
             pulseRing.style.display = 'block';
             pulseRing.style.borderColor = pose.color;
             
             // TTS - start timer only after announcement finishes
             announcePoseStart(index, () => {
                 startTimer();
-                
-                // 10-second mark announcement
-                setTimeout(() => {
-                    if (!isPaused && isWorkoutActive && currentPoseIndex === index && !isResting) {
-                        speak("10 detik");
-                    }
-                }, 10000);
             });
         }
         
         function startRest() {
             isResting = true;
-            timeLeft = 15; // Jeda 15 detik
-            totalTime = 15;
+            timeLeft = restDuration;
+            totalTime = restDuration;
             
-            phaseLabel.textContent = "Istirahat";
-            timerDisplay.textContent = "15";
+            phaseLabel.textContent = "Berhenti Sejenak, Atur Nafas";
+            timerDisplay.textContent = restDuration;
             poseTitle.textContent = "Recovery";
             poseIcon.textContent = "😮‍💨";
             poseNumber.textContent = "Jeda antar pose";
-            instructionText.textContent = "Atur napas. Tarik napas dalam-dalam melalui hidung, hembuskan melalui mulut. Bersiap untuk pose berikutnya.";
+            instructionText.textContent = "Atur nafas. Tarik nafas dalam-dalam melalui hidung, hembuskan melalui mulut. Bersiap untuk pose berikutnya.";
             
             // Visual elements update during rest
-            if (currentPoseNameMobile) currentPoseNameMobile.textContent = "Istirahat";
-            if (poseVisualImg) poseVisualImg.src = "";
+            if (currentPoseNameMobile) currentPoseNameMobile.textContent = "Berhenti Sejenak, Atur Nafas";
+            if (poseVisualImg) poseVisualImg.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='65' font-size='55' text-anchor='middle'>😮‍💨</text></svg>";
             if (currentPoseBox) currentPoseBox.style.borderLeftColor = 'var(--color-rest)';
             
             currentCard.style.borderColor = 'var(--color-rest)';
@@ -1244,9 +1486,12 @@
             announceRest();
             
             // Countdown 3-2-1 at end of rest
-            setTimeout(() => announceRestCountdown(3), 12000);
-            setTimeout(() => announceRestCountdown(2), 13000);
-            setTimeout(() => announceRestCountdown(1), 14000);
+            const delay3 = Math.max(0, (restDuration - 3) * 1000);
+            const delay2 = Math.max(0, (restDuration - 2) * 1000);
+            const delay1 = Math.max(0, (restDuration - 1) * 1000);
+            if (delay3 > 0) setTimeout(() => announceRestCountdown(3), delay3);
+            if (delay2 > 0) setTimeout(() => announceRestCountdown(2), delay2);
+            if (delay1 > 0) setTimeout(() => announceRestCountdown(1), delay1);
             
             startTimer();
         }
@@ -1284,7 +1529,7 @@
         }
         
         function updatePoseDisplay(pose) {
-            poseNumber.textContent = `Pose ${currentPoseIndex + 1} dari 8`;
+            poseNumber.textContent = `Pose ${currentPoseIndex + 1} dari ${workoutPoses.length}`;
             poseTitle.textContent = pose.name;
             poseIcon.textContent = pose.icon;
             instructionText.textContent = pose.instruction;
@@ -1368,7 +1613,7 @@
         function handlePhaseEnd() {
             if (!isResting) {
                 // End of pose - no end narration
-                if (currentPoseIndex < 7) {
+                if (currentPoseIndex < workoutPoses.length - 1) {
                     // Start rest before next pose
                     startRest();
                 } else {
@@ -1397,12 +1642,19 @@
         function finishWorkout() {
             isWorkoutActive = false;
             clearInterval(timerInterval);
-            if (bgmAudio) {
-                bgmAudio.pause();
-                bgmAudio.currentTime = 0;
-            }
+            
+            const activeSeconds = workoutPoses.length * poseDuration;
+            const restSeconds = Math.max(0, (workoutPoses.length - 1) * restDuration);
+            const totalSeconds = activeSeconds + restSeconds + 3;
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            
+            document.getElementById('finishPoseCount').textContent = workoutPoses.length;
+            document.getElementById('totalTimeStat').textContent = mins + ':' + (secs < 10 ? '0' + secs : secs);
+            document.getElementById('activeTimeStat').textContent = activeSeconds;
+            
             document.getElementById('finishOverlay').classList.remove('hidden');
-            speak("Selamat! Latihan core transformation 160 detik berhasil diselesaikan. Istirahat dan rehidrasi.", true);
+            if (ttsEnabled) speak("Selamat! Latihan core transformation berhasil diselesaikan. Beristirahat dan rehidrasi.", true);
         }
         
         function resetWorkout() {
@@ -1416,15 +1668,22 @@
             }
             
             // Reset displays
-            timerDisplay.textContent = "20";
+            timerDisplay.textContent = poseDuration;
             progressCircle.style.strokeDashoffset = 0;
             currentPoseIndex = -1;
             phaseLabel.textContent = "Persiapan";
-            if (poseVisualImg && poses[0].image) {
-                poseVisualImg.src = poses[0].image;
+            const firstEnabled = poses.find(p => enabledPoseIds.includes(p.id));
+            if (poseVisualImg && firstEnabled && firstEnabled.image) {
+                poseVisualImg.src = firstEnabled.image;
             }
-            if (currentPoseNameMobile) currentPoseNameMobile.textContent = poses[0].name;
-            if (nextPoseNameMobile && poses[1]) nextPoseNameMobile.textContent = poses[1].name;
+            if (currentPoseNameMobile && firstEnabled) currentPoseNameMobile.textContent = firstEnabled.name;
+            
+            const enabledPosesList = poses.filter(p => enabledPoseIds.includes(p.id));
+            if (nextPoseNameMobile && enabledPosesList.length > 1) {
+                nextPoseNameMobile.textContent = enabledPosesList[1].name;
+            } else if (nextPoseNameMobile) {
+                nextPoseNameMobile.textContent = 'Selesai';
+            }
             
             // Clear progress strip
             document.querySelectorAll('.progress-item').forEach(el => {
@@ -1450,16 +1709,8 @@
                     <h3 style="margin-bottom: 10px; color: ${pose.color};">${index + 1}. ${pose.name}</h3>
                     
                     <div class="form-group">
-                        <label>Start Pose:</label>
-                        <textarea id="tts-${pose.id}-start">${pose.tts.start}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Halfway (10 detik):</label>
-                        <textarea id="tts-${pose.id}-halfway">${pose.tts.halfway}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>End Pose:</label>
-                        <textarea id="tts-${pose.id}-end">${pose.tts.end}</textarea>
+                        <textarea id="tts-${pose.id}-start" placeholder="Contoh: High pleng. Posisi telapak tangan lurus. Mulai.">${pose.tts.start}</textarea>
+                        <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 4px;">Pastikan ada kata <strong>Mulai</strong> di akhir agar timer berjalan setelah instruksi selesai.</div>
                     </div>
                     <button class="btn btn-secondary" style="width: 100%;" onclick="testPoseTTS('${pose.id}')">
                         🔊 Test Suara Pose Ini
@@ -1476,9 +1727,6 @@
             // Save settings
             poses.forEach(pose => {
                 pose.tts.start = document.getElementById(`tts-${pose.id}-start`).value;
-                pose.tts.halfway = document.getElementById(`tts-${pose.id}-halfway`).value;
-                pose.tts.end = document.getElementById(`tts-${pose.id}-end`).value;
-                
                 localStorage.setItem(`tts_${pose.id}`, JSON.stringify(pose.tts));
             });
             
