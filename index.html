@@ -36,7 +36,12 @@
             background: var(--bg-dark);
             color: var(--text-light);
             overflow: hidden;
+            /* 100vh dihitung dari viewport terbesar (saat bar alamat tersembunyi).
+               Di HP landscape bar alamat sering tetap tampil, jadi 100vh lebih
+               tinggi dari area yang benar-benar terlihat dan bagian bawah
+               kepotong. 100dvh mengikuti tinggi yang sesungguhnya. */
             height: 100vh;
+            height: 100dvh;
             width: 100vw;
             display: flex;
             flex-direction: column;
@@ -107,6 +112,7 @@
             display: flex;
             flex-direction: row;
             height: 100vh;
+            height: 100dvh;
             width: 100vw;
         }
         
@@ -335,7 +341,14 @@
             z-index: 100;
             display: flex;
             flex-direction: column;
+            /* "safe center" wajib di sini. Dengan justify-content:center biasa,
+               isi yang lebih tinggi dari layar terdorong keluar ke atas DAN ke
+               bawah, dan bagian atas mustahil dicapai walau di-scroll — di HP
+               landscape tombol "Durasi Pose" hilang total dan tombol "Mulai
+               Latihan" kepotong. Kata kunci safe otomatis jatuh ke flex-start
+               begitu isinya meluap, jadi tidak ada yang hilang. */
             justify-content: center;
+            justify-content: safe center;
             align-items: center;
             padding: 40px;
             backdrop-filter: blur(10px);
@@ -398,6 +411,26 @@
             accent-color: #667eea;
         }
         
+        /* Dulu inline style; dipindah ke kelas supaya bisa dikecilkan di
+           landscape pendek tanpa perlu !important. Nilainya sengaja sama
+           persis dengan inline style sebelumnya agar desktop tidak berubah. */
+        .field-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 6px;
+        }
+
+        .field-label-spaced {
+            margin-top: 10px;
+        }
+
+        .btn-start-main {
+            font-size: 1.2rem;
+            padding: 15px 40px;
+            margin: 0 auto;
+            display: flex;
+        }
+
         .time-selector {
             display: flex;
             gap: 6px;
@@ -803,6 +836,117 @@
                 margin: 10px 0;
             }
         }
+
+        /* ── HP LANDSCAPE: muat dalam satu layar tanpa scroll ──
+           Aturan mobile di atas memakai kondisi gabungan (max-width:768px),
+           yang cocok untuk potret sempit tapi salah untuk landscape: di
+           landscape kita justru punya banyak LEBAR dan sedikit TINGGI.
+           Blok ini menimpanya khusus untuk landscape — melebarkan grid agar
+           tidak memanjang ke bawah, dan merapatkan jarak vertikal. */
+        @media (orientation: landscape) and (max-height: 500px) {
+            /* 2 kolom membuat grid jadi 4 baris (~200px); 4 kolom cukup 2 baris
+               (~100px) dan itu yang bikin isinya muat di layar landscape. */
+            .pose-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+                margin-bottom: 8px;
+            }
+
+            .overlay {
+                padding: 8px 12px;
+            }
+
+            .time-selector,
+            .toggle-row,
+            .total-time-bar {
+                margin-bottom: 8px;
+                gap: 5px;
+            }
+
+            .icon-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 1.05rem;
+            }
+
+            .time-btn {
+                padding: 5px 9px;
+                min-width: 34px;
+            }
+
+            .pose-mini {
+                padding: 6px 7px;
+                font-size: 0.65rem;
+            }
+
+            /* Di 4 kolom kartunya sempit dan checkbox yang diposisikan absolut
+               menimpa nama pose ("Side Plank Kanan" terbaca "Side Plank Kana").
+               Sisakan ruang untuk checkbox dan biarkan namanya turun baris. */
+            .pose-mini strong {
+                display: block;
+                padding-right: 18px;
+                line-height: 1.25;
+            }
+
+            /* Aturan mobile mengunci ilustrasi di 140px, jadi gambarnya mengambang
+               kecil di tengah kotak krem yang jauh lebih besar. Di landscape justru
+               ilustrasi ini isi utamanya. object-fit:contain + max-height:100%
+               sudah menjamin tidak mungkin meluap, jadi batas 140px tidak perlu. */
+            .pose-visual-img {
+                max-height: 100%;
+            }
+        }
+
+        /* Landscape yang sangat pendek: HP kecil yang bar alamat browsernya
+           tetap tampil (tinggi efektif tinggal ~280-320px). Tanpa blok ini
+           tombol "Mulai Latihan" jatuh di bawah lipatan layar. */
+        @media (orientation: landscape) and (max-height: 340px) {
+            .field-label {
+                font-size: 0.68rem;
+                margin-bottom: 2px;
+            }
+
+            .field-label-spaced {
+                margin-top: 4px;
+            }
+
+            .btn-start-main {
+                font-size: 0.95rem;
+                padding: 8px 26px;
+            }
+
+            .time-selector,
+            .toggle-row {
+                margin-bottom: 5px;
+                gap: 4px;
+            }
+
+            .time-btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+                min-width: 30px;
+            }
+
+            .icon-toggle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.95rem;
+            }
+
+            .pose-grid {
+                gap: 4px;
+                margin-bottom: 6px;
+            }
+
+            .pose-mini {
+                padding: 4px 6px;
+                font-size: 0.6rem;
+            }
+
+            .overlay {
+                padding: 6px 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -895,10 +1039,10 @@
     <!-- Start Overlay -->
     <div class="overlay" id="startOverlay">
         <div class="start-content">
-            <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 6px;">Durasi Pose</div>
+            <div class="field-label">Durasi Pose</div>
             <div class="time-selector" id="timeSelector"></div>
-            
-            <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 6px; margin-top: 10px;">Durasi Jeda</div>
+
+            <div class="field-label field-label-spaced">Durasi Jeda</div>
             <div class="time-selector" id="restSelector"></div>
             
             <div class="toggle-row">
@@ -908,7 +1052,7 @@
             
             <div class="pose-grid" id="poseGrid"></div>
             
-            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 40px; margin: 0 auto; display: flex;" onclick="startCountdown()">
+            <button class="btn btn-primary btn-start-main" onclick="startCountdown()">
                 🚀 Mulai Latihan
             </button>
         </div>
