@@ -2,11 +2,21 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Plank, latihan perut 160 detik</title>
+    <meta name="description" content="Latihan perut 160 detik: delapan gerakan plank dengan panduan suara Bahasa Indonesia, musik latar, dan durasi yang bisa diatur. Bisa dipasang di HP, dipakai tegak maupun mendatar.">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>160 Detik Core Transformation</title>
+    <meta name="apple-mobile-web-app-title" content="Plank">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:title" content="Plank, latihan perut 160 detik">
+    <meta property="og:description" content="Delapan gerakan plank dengan panduan suara Bahasa Indonesia dan musik latar.">
+    <meta property="og:image" content="https://plank.rhadzor.id/icon-512.png">
     <style>
         * {
             margin: 0;
@@ -14,7 +24,7 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         :root {
             --color-high: #E57373;
             --color-low: #64B5F6;
@@ -27,98 +37,72 @@
             --color-rest: #95A5A6;
             --bg-dark: #1a1a2e;
             --bg-panel: #16213e;
+            --bg-card: #1f2a4d;
             --text-light: #eaeaea;
+            --text-dim: rgba(234, 234, 234, 0.62);
             --accent: #0f3460;
+            --grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --line: rgba(255, 255, 255, 0.08);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
-        
+
+        html {
+            background: var(--bg-dark);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--bg-dark);
             color: var(--text-light);
             overflow: hidden;
             /* 100vh dihitung dari viewport terbesar (saat bar alamat tersembunyi).
-               Di HP landscape bar alamat sering tetap tampil, jadi 100vh lebih
-               tinggi dari area yang benar-benar terlihat dan bagian bawah
-               kepotong. 100dvh mengikuti tinggi yang sesungguhnya. */
+               100dvh mengikuti tinggi yang benar-benar terlihat. */
             height: 100vh;
             height: 100dvh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Landscape enforcement */
-        @media screen and (orientation: portrait) {
-            .rotate-warning {
-                display: flex !important;
-            }
-            .app-container {
-                display: none !important;
-            }
-        }
-        
-        .rotate-warning {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
+        }
+
+        button {
+            font-family: inherit;
+            color: inherit;
+        }
+
+        /* Ikon SVG inline. Ukurannya ikut ukuran huruf di sekitarnya. */
+        .ic {
+            width: 1.15em;
+            height: 1.15em;
+            flex: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            vertical-align: -0.2em;
+        }
+
+        .ic.solid {
+            fill: currentColor;
+            stroke: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ───────────── LAYAR LATIHAN ───────────── */
+
+        .app {
+            display: grid;
             height: 100%;
-            background: var(--bg-dark);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
+            width: 100%;
+            /* Lanskap (desktop dan HP mendatar): timer di kiri, ilustrasi di kanan. */
+            grid-template-columns: 42% 1fr;
+            grid-template-areas: "kiri kanan";
         }
-        
-        .rotate-warning h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .install-btn {
-            margin-top: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.15s, opacity 0.15s;
-        }
-        
-        .install-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .install-hint {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            display: none;
-            background: rgba(255,255,255,0.05);
-            padding: 12px 20px;
-            border-radius: 12px;
-        }
-        
-        .app-container {
-            display: flex;
-            flex-direction: row;
-            height: 100vh;
-            height: 100dvh;
-            width: 100vw;
-        }
-        
-        /* Left Panel - Timer & Controls Only */
+
         .left-panel {
-            width: 42%;
+            grid-area: kiri;
             background: var(--bg-panel);
             padding: 15px;
             display: flex;
@@ -126,176 +110,225 @@
             justify-content: center;
             align-items: center;
             border-right: 2px solid var(--accent);
-            position: relative;
+            gap: 18px;
+            min-height: 0;
+        }
+
+        .timer-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 12px;
         }
-        
+
         .timer-container {
             position: relative;
-            width: 160px;
-            height: 160px;
+            width: 180px;
+            height: 180px;
         }
-        
+
         .timer-svg {
             transform: rotate(-90deg);
             width: 100%;
             height: 100%;
         }
-        
+
         .timer-circle {
             fill: none;
             stroke: var(--accent);
             stroke-width: 8;
         }
-        
+
         .timer-progress {
             fill: none;
             stroke-width: 8;
             stroke-linecap: round;
             transition: stroke-dashoffset 1s linear;
         }
-        
+
         .timer-text {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 3.8rem;
+            font-size: 4rem;
             font-weight: bold;
             font-variant-numeric: tabular-nums;
+            line-height: 1;
         }
-        
+
         .phase-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             opacity: 0.8;
+            text-align: center;
         }
-        
-        .current-pose-card,
-        .next-preview,
-        .instruction-box {
-            display: none !important;
-        }
-        
+
         .controls {
             display: flex;
             gap: 12px;
-            margin-top: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
-        
+
         .btn {
             background: var(--accent);
             border: none;
             color: white;
-            padding: 12px 28px;
+            padding: 12px 26px;
             border-radius: 30px;
             cursor: pointer;
             font-size: 1rem;
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            transition: transform 0.15s, opacity 0.15s;
+            transition: transform 0.15s, opacity 0.15s, background 0.2s;
             font-weight: 600;
+            min-height: 44px;
         }
-        
+
         .btn:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
-        
+
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--grad);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
-        
+
         .btn-secondary {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
-        
-        .btn-settings {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: var(--text-dim);
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-light);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--line);
+            color: var(--text-light);
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: background 0.2s;
         }
-        
-        /* Right Panel - Progress & Pose Visual */
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .btn-settings-float {
+            position: fixed;
+            top: calc(10px + var(--safe-top));
+            right: 10px;
+            z-index: 50;
+        }
+
+        /* Di lanskap roda gigi mengambang di pojok kanan atas, tepat di atas
+           strip progres. Sisakan ruang supaya tidak menimpa. */
+        @media (orientation: landscape) {
+            .progress-strip {
+                margin-right: 50px;
+            }
+        }
+
         .right-panel {
-            width: 58%;
+            grid-area: kanan;
             padding: 15px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            min-height: 0;
+            gap: 12px;
         }
-        
+
         .progress-strip {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 15px;
             padding: 10px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
         }
-        
+
         .progress-item {
             flex: 1;
             height: 8px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             margin: 0 3px;
             border-radius: 4px;
-            position: relative;
             transition: all 0.3s;
         }
-        
+
         .progress-item.active {
             background: currentColor;
             box-shadow: 0 0 10px currentColor;
         }
-        
+
         .progress-item.completed {
             background: #4ade80;
         }
-        
+
         .pose-info-panel {
             display: flex;
             gap: 12px;
-            margin-bottom: 15px;
         }
-        
+
         .pose-info-box {
             flex: 1;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            padding: 12px;
-            text-align: center;
+            padding: 12px 14px;
             min-width: 0;
         }
-        
+
         .pose-info-box.current {
             border-left: 4px solid var(--color-high);
         }
-        
+
         .pose-info-box.next {
             opacity: 0.7;
         }
-        
+
         .pose-info-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             opacity: 0.6;
             margin-bottom: 4px;
             letter-spacing: 1px;
         }
-        
+
         .pose-info-name {
             font-size: 1.1rem;
             font-weight: bold;
             line-height: 1.2;
         }
-        
+
+        .pose-info-alias {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
         .pose-visual {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -306,932 +339,1394 @@
             padding: 20px;
             min-height: 0;
         }
-        
+
         .pose-visual-img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
             border-radius: 12px;
         }
-        
-        .tts-indicator {
-            display: inline-flex;
+
+        .rest-visual {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
-            background: rgba(255,255,255,0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            margin-left: auto;
+            justify-content: center;
+            gap: 10px;
+            color: #4a5568;
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: #fbf3dc;
+            border-radius: 16px;
         }
-        
-        .tts-indicator.active {
-            background: #10b981;
-            color: white;
+
+        .rest-visual .ic {
+            width: 3em;
+            height: 3em;
+            stroke-width: 1.5;
+            animation: breathe 4s ease-in-out infinite;
         }
-        
-        /* Start Screen Overlay */
+
+        /* ───────────── POTRET: timer atas, ilustrasi tengah, kontrol bawah ───────────── */
+        @media (orientation: portrait) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+                grid-template-areas: "timer" "kanan" "kontrol";
+            }
+
+            /* Panel kiri dibubarkan; timer dan kontrol jadi anak grid langsung
+               supaya kontrol bisa duduk di bawah ilustrasi. */
+            .left-panel {
+                display: contents;
+            }
+
+            .timer-block {
+                grid-area: timer;
+                flex-direction: column-reverse;
+                padding: calc(14px + var(--safe-top)) 16px 4px;
+                gap: 8px;
+            }
+
+            .timer-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .timer-text {
+                font-size: 4.4rem;
+            }
+
+            .right-panel {
+                padding: 8px 16px;
+            }
+
+            .controls {
+                grid-area: kontrol;
+                padding: 12px 16px calc(16px + var(--safe-bottom));
+                background: var(--bg-panel);
+                border-top: 1px solid var(--line);
+            }
+
+            .controls .btn {
+                flex: 1;
+                max-width: 220px;
+            }
+        }
+
+        /* Potret sempit: HP */
+        @media (orientation: portrait) and (max-width: 480px) {
+            .timer-container {
+                width: 170px;
+                height: 170px;
+            }
+
+            .timer-text {
+                font-size: 3.6rem;
+            }
+
+            .pose-info-box {
+                padding: 10px 12px;
+            }
+
+            .pose-info-name {
+                font-size: 1rem;
+            }
+
+            .pose-visual {
+                padding: 12px;
+            }
+        }
+
+        /* HP potret yang pendek */
+        @media (orientation: portrait) and (max-height: 700px) {
+            .timer-container {
+                width: 140px;
+                height: 140px;
+            }
+
+            .timer-text {
+                font-size: 3rem;
+            }
+        }
+
+        /* ───────────── LANSKAP PENDEK: HP mendatar ───────────── */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .left-panel {
+                width: auto;
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .app {
+                grid-template-columns: 40% 1fr;
+            }
+
+            .timer-container {
+                width: 130px;
+                height: 130px;
+            }
+
+            .timer-text {
+                font-size: 2.8rem;
+            }
+
+            .timer-circle,
+            .timer-progress {
+                stroke-width: 7;
+            }
+
+            .phase-label {
+                font-size: 0.72rem;
+                letter-spacing: 1px;
+            }
+
+            .controls {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+                min-height: 38px;
+            }
+
+            .btn-settings-float {
+                top: 6px;
+                right: 6px;
+                width: 36px;
+                height: 36px;
+                font-size: 0.95rem;
+            }
+
+            .right-panel {
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .progress-strip {
+                padding: 6px;
+            }
+
+            .progress-item {
+                height: 6px;
+                margin: 0 2px;
+            }
+
+            .pose-info-panel {
+                gap: 8px;
+            }
+
+            .pose-info-box {
+                padding: 7px 10px;
+                border-radius: 10px;
+            }
+
+            .pose-info-label {
+                font-size: 0.6rem;
+                margin-bottom: 2px;
+            }
+
+            .pose-info-name {
+                font-size: 0.9rem;
+            }
+
+            .pose-info-alias {
+                font-size: 0.7rem;
+            }
+
+            .pose-visual {
+                padding: 10px;
+                border-radius: 12px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 340px) {
+            .timer-container {
+                width: 104px;
+                height: 104px;
+            }
+
+            .timer-text {
+                font-size: 2.2rem;
+            }
+
+            .left-panel {
+                gap: 6px;
+            }
+
+            .timer-block {
+                gap: 6px;
+            }
+        }
+
+        /* ───────────── LAYAR PENUH: awal, hitung mundur, selesai ───────────── */
         .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(26, 26, 46, 0.95);
+            inset: 0;
+            background: var(--bg-dark);
             z-index: 100;
             display: flex;
             flex-direction: column;
-            /* "safe center" wajib di sini. Dengan justify-content:center biasa,
-               isi yang lebih tinggi dari layar terdorong keluar ke atas DAN ke
-               bawah, dan bagian atas mustahil dicapai walau di-scroll — di HP
-               landscape tombol "Durasi Pose" hilang total dan tombol "Mulai
-               Latihan" kepotong. Kata kunci safe otomatis jatuh ke flex-start
-               begitu isinya meluap, jadi tidak ada yang hilang. */
+            /* "safe center": kalau isinya lebih tinggi dari layar, jatuh ke
+               flex-start supaya bagian atas tetap bisa di-scroll. */
             justify-content: center;
             justify-content: safe center;
             align-items: center;
-            padding: 40px;
-            backdrop-filter: blur(10px);
+            padding: 24px;
+            padding-top: calc(24px + var(--safe-top));
+            padding-bottom: calc(24px + var(--safe-bottom));
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        
+
+        .overlay.translucent {
+            background: rgba(26, 26, 46, 0.92);
+            backdrop-filter: blur(6px);
+        }
+
         .overlay.hidden {
             display: none;
         }
-        
+
+        /* Layar awal */
+        #startOverlay {
+            background:
+                radial-gradient(ellipse 70% 55% at 15% 0%, rgba(102, 126, 234, 0.22), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 100% 100%, rgba(118, 75, 162, 0.22), transparent 60%),
+                var(--bg-dark);
+        }
+
         .start-content {
-            text-align: center;
-            max-width: 600px;
-        }
-        
-        .start-content h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .start-content p {
-            margin-bottom: 30px;
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        
-        .pose-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .pose-mini {
-            background: rgba(255,255,255,0.05);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            border-left: 3px solid;
-            position: relative;
-            text-align: left;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        
-        .pose-mini.disabled {
-            opacity: 0.4;
-        }
-        
-        .pose-check {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-        
-        /* Dulu inline style; dipindah ke kelas supaya bisa dikecilkan di
-           landscape pendek tanpa perlu !important. Nilainya sengaja sama
-           persis dengan inline style sebelumnya agar desktop tidak berubah. */
-        .field-label {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-bottom: 6px;
+            width: 100%;
+            max-width: 900px;
+            background: rgba(22, 33, 62, 0.75);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 28px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
         }
 
-        .field-label-spaced {
-            margin-top: 10px;
-        }
-
-        .btn-start-main {
-            font-size: 1.2rem;
-            padding: 15px 40px;
-            margin: 0 auto;
+        .start-head {
             display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            flex: none;
+        }
+
+        .brand h1 {
+            font-size: 1.9rem;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .start-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 20px 32px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .field-label small {
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 0.78rem;
         }
 
         .time-selector {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
             gap: 6px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
         }
-        
+
+        #restSelector {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
         .time-btn {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.07);
             border: 2px solid transparent;
             color: white;
-            padding: 8px 12px;
+            padding: 8px 0;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.2s;
-            min-width: 44px;
+            min-width: 0;
+            min-height: 40px;
         }
-        
+
         .time-btn:hover {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.14);
         }
-        
+
         .time-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: rgba(255,255,255,0.3);
+            background: var(--grad);
+            border-color: rgba(255, 255, 255, 0.3);
         }
-        
+
         .toggle-row {
             display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        
-        .icon-toggle {
-            background: rgba(255,255,255,0.08);
+
+        .toggle {
+            flex: 1 1 140px;
+            background: rgba(255, 255, 255, 0.07);
             border: 2px solid transparent;
             color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            padding: 10px 14px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1.4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        
-        .icon-toggle:hover {
-            background: rgba(255,255,255,0.15);
-        }
-        
-        .icon-toggle.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: rgba(255,255,255,0.3);
-        }
-        
-        .icon-toggle.inactive {
-            opacity: 0.5;
-            background: rgba(255,255,255,0.05);
-        }
-        
-        .total-time-bar {
-            display: flex;
             gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+            transition: all 0.2s;
+            text-align: left;
         }
-        
-        .total-time-bar span {
-            background: rgba(255,255,255,0.1);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 1rem;
+
+        .toggle .ic {
+            width: 1.3em;
+            height: 1.3em;
+        }
+
+        .toggle:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .toggle.active {
+            background: var(--grad);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .toggle.inactive {
+            opacity: 0.55;
+        }
+
+        .toggle-state {
+            margin-left: auto;
+            font-size: 0.72rem;
+            font-weight: 500;
+            opacity: 0.75;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pose-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .pose-mini {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 9px 10px 9px 12px;
+            border-radius: 10px;
+            border-left: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s, background 0.2s;
+            user-select: none;
+            min-height: 48px;
+        }
+
+        .pose-mini:hover {
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        .pose-mini.disabled {
+            opacity: 0.4;
+        }
+
+        .pose-check {
+            width: 17px;
+            height: 17px;
+            flex: none;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .pose-mini-text {
+            min-width: 0;
+            line-height: 1.2;
+        }
+
+        .pose-mini-name {
+            font-size: 0.85rem;
             font-weight: 600;
+            display: block;
         }
-        
+
+        .pose-mini-alias {
+            font-size: 0.72rem;
+            opacity: 0.55;
+            display: block;
+            margin-top: 1px;
+        }
+
+        .start-foot {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .total-time {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .total-time strong {
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+        .start-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-start-main {
+            font-size: 1.1rem;
+            padding: 14px 34px;
+        }
+
+        .install-hint {
+            width: 100%;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 14px;
+            border-radius: 10px;
+        }
+
+        /* Hitung mundur */
         .countdown-big {
-            font-size: 5rem;
+            font-size: 6rem;
             font-weight: bold;
-            margin: 20px 0;
+            line-height: 1;
+            margin: 10px 0 16px;
             animation: pulse 1s ease-in-out;
+            font-variant-numeric: tabular-nums;
         }
-        
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
-        
-        /* Settings Modal */
+
+        /* Selesai */
+        .finish-content {
+            text-align: center;
+            max-width: 560px;
+            width: 100%;
+        }
+
+        .finish-content h2 {
+            color: #4ade80;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .finish-content > p {
+            color: var(--text-dim);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin: 28px 0;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 18px 10px;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.9rem;
+            font-weight: bold;
+            color: #8b9cf4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .finish-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ───────────── MODAL TEKS PANDUAN ───────────── */
         .modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
             z-index: 200;
             display: none;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
         }
-        
+
         .modal.active {
             display: flex;
         }
-        
+
         .modal-content {
             background: var(--bg-panel);
+            border: 1px solid var(--line);
             border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
+            padding: 22px 24px;
+            max-width: 640px;
             width: 100%;
-            max-height: 80vh;
+            max-height: min(88vh, 88dvh);
             overflow-y: auto;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
+            gap: 12px;
         }
-        
+
         .modal h2 {
-            margin: 0;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
+
+        .modal-tip {
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.5;
         }
-        
-        .form-group {
-            margin-bottom: 15px;
+
+        .tts-group {
+            margin-bottom: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border-left: 4px solid;
         }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            opacity: 0.8;
+
+        .tts-group h3 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
         }
-        
-        .form-group textarea {
+
+        .tts-group h3 small {
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        .tts-group textarea {
             width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             padding: 10px;
             border-radius: 8px;
             font-family: inherit;
+            font-size: 0.9rem;
             resize: vertical;
-            min-height: 60px;
+            min-height: 56px;
+            line-height: 1.4;
         }
-        
+
+        .tts-group .btn {
+            margin-top: 8px;
+            width: 100%;
+            min-height: 40px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
         .voice-test {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255,255,255,0.03);
+            margin-top: 18px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
         }
-        
+
+        .voice-test strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
         .volume-control {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-top: 10px;
+            font-size: 0.9rem;
         }
-        
+
+        .volume-control > span:first-child {
+            width: 84px;
+            flex: none;
+            color: var(--text-dim);
+        }
+
+        .volume-control > span:last-child {
+            width: 48px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
         input[type="range"] {
             flex: 1;
             accent-color: #667eea;
         }
-        
-        /* Finish Screen */
-        .finish-content {
-            text-align: center;
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
         }
-        
-        .finish-content h2 {
-            color: #4ade80;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+
+        .modal-actions .btn {
+            flex: 1;
         }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .stat-box {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 12px;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 5px;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        /* Animations */
-        .breathing {
-            animation: breathe 4s ease-in-out infinite;
-        }
-        
+
+        /* Animasi napas */
         @keyframes breathe {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+            0%, 100% { opacity: 0.55; transform: scale(0.96); }
+            50% { opacity: 1; transform: scale(1.04); }
         }
-        
-        .pulse-ring {
-            display: none !important;
-        }
-        
-        /* Mobile / Small Screen Adjustments */
-        @media (max-height: 500px) and (orientation: landscape), (max-width: 768px) {
-            .left-panel {
-                width: 40%;
-                padding: 10px;
-                gap: 8px;
+
+        /* ───────────── LAYAR AWAL DI LAYAR KECIL ───────────── */
+        @media (max-width: 768px) {
+            .overlay {
+                padding: 16px;
+                padding-top: calc(16px + var(--safe-top));
+                padding-bottom: calc(16px + var(--safe-bottom));
             }
-            
-            .timer-container {
-                width: 130px;
-                height: 130px;
+
+            .start-content {
+                padding: 16px 16px 18px;
+                border-radius: 18px;
             }
-            
-            .timer-text {
-                font-size: 2.8rem;
+
+            .brand-logo {
+                width: 44px;
+                height: 44px;
             }
-            
-            .timer-circle, .timer-progress {
-                stroke-width: 7;
+
+            .brand h1 {
+                font-size: 1.6rem;
             }
-            
-            .phase-label {
-                font-size: 0.75rem;
-                letter-spacing: 1px;
+
+            .brand p {
+                font-size: 0.82rem;
             }
-            
-            .controls {
-                gap: 8px;
+
+            .start-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
             }
-            
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
+
+            .start-grid .col + .col {
+                margin-top: 18px;
             }
-            
-            .btn-settings {
-                top: 8px;
-                right: 8px;
-                padding: 6px;
-                font-size: 0.85rem;
+
+            #timeSelector {
+                grid-template-columns: repeat(5, 1fr);
             }
-            
-            .right-panel {
-                width: 60%;
-                padding: 10px;
-            }
-            
-            .progress-strip {
-                margin-bottom: 10px;
-                padding: 6px;
-            }
-            
-            .progress-item {
-                height: 6px;
-                margin: 0 2px;
-            }
-            
-            .pose-info-panel {
-                gap: 8px;
-                margin-bottom: 10px;
-            }
-            
-            .pose-info-box {
-                padding: 8px;
-                border-radius: 10px;
-            }
-            
-            .pose-info-label {
-                font-size: 0.6rem;
-            }
-            
-            .pose-info-name {
-                font-size: 0.9rem;
-            }
-            
-            .pose-visual {
-                padding: 12px;
-                border-radius: 12px;
-            }
-            
-            .pose-visual-img {
-                max-height: 140px;
-            }
-            
-            /* Overlay mobile fixes */
-            .start-content h1 {
-                font-size: 1.2rem;
-                margin-bottom: 10px;
-            }
-            
-            .start-content p {
-                font-size: 0.75rem;
-                margin-bottom: 10px;
-            }
-            
-            .pose-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-                margin-bottom: 10px;
-            }
-            
-            .pose-mini {
-                padding: 8px;
-                font-size: 0.7rem;
-                border-left-width: 2px;
-            }
-            
-            .pose-check {
-                top: 6px;
-                right: 6px;
-                width: 14px;
-                height: 14px;
-            }
-            
+
             .time-btn {
-                padding: 6px 8px;
-                font-size: 0.75rem;
-                min-width: 36px;
+                padding: 9px 0;
+                font-size: 0.85rem;
+                min-height: 44px;
             }
-            
-            .icon-toggle {
-                width: 42px;
-                height: 42px;
-                font-size: 1.2rem;
+
+            .toggle {
+                flex-basis: 100%;
             }
-            
-            .total-time-bar span {
-                padding: 8px 14px;
-                font-size: 0.9rem;
+
+            .pose-grid {
+                gap: 6px;
             }
-            
-            .finish-content h2 {
-                font-size: 1.3rem;
-                margin-bottom: 10px;
+
+            .pose-mini {
+                padding: 8px 8px 8px 10px;
+                gap: 8px;
             }
-            
-            .finish-content p {
+
+            .pose-mini-name {
                 font-size: 0.8rem;
             }
-            
-            .stats {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-                margin: 10px 0;
-            }
-            
-            .stat-box {
-                padding: 8px;
-            }
-            
-            .stat-value {
-                font-size: 1.1rem;
-            }
-            
-            .stat-label {
-                font-size: 0.6rem;
-            }
-            
-            .overlay {
-                padding: 10px;
-            }
-            
-            .countdown-big {
-                font-size: 3rem;
-                margin: 10px 0;
-            }
-        }
 
-        /* ── HP LANDSCAPE: muat dalam satu layar tanpa scroll ──
-           Aturan mobile di atas memakai kondisi gabungan (max-width:768px),
-           yang cocok untuk potret sempit tapi salah untuk landscape: di
-           landscape kita justru punya banyak LEBAR dan sedikit TINGGI.
-           Blok ini menimpanya khusus untuk landscape — melebarkan grid agar
-           tidak memanjang ke bawah, dan merapatkan jarak vertikal. */
-        @media (orientation: landscape) and (max-height: 500px) {
-            /* 2 kolom membuat grid jadi 4 baris (~200px); 4 kolom cukup 2 baris
-               (~100px) dan itu yang bikin isinya muat di layar landscape. */
-            .pose-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 5px;
-                margin-bottom: 8px;
+            .pose-mini-alias {
+                font-size: 0.68rem;
             }
 
-            .overlay {
-                padding: 8px 12px;
+            .start-foot {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                margin-top: 14px;
+                padding-top: 14px;
+                gap: 12px;
             }
 
-            .time-selector,
-            .toggle-row,
-            .total-time-bar {
-                margin-bottom: 8px;
-                gap: 5px;
+            /* Potret HP: rapatkan supaya layar awal muat tanpa scroll di 390x844. */
+            .start-head {
+                margin-bottom: 16px;
             }
 
-            .icon-toggle {
-                width: 36px;
-                height: 36px;
-                font-size: 1.05rem;
+            .field {
+                margin-bottom: 14px;
             }
 
-            .time-btn {
-                padding: 5px 9px;
-                min-width: 34px;
+            .toggle {
+                padding: 8px 14px;
             }
 
             .pose-mini {
-                padding: 6px 7px;
-                font-size: 0.65rem;
+                min-height: 44px;
+                padding: 6px 8px 6px 10px;
             }
 
-            /* Di 4 kolom kartunya sempit dan checkbox yang diposisikan absolut
-               menimpa nama pose ("Side Plank Kanan" terbaca "Side Plank Kana").
-               Sisakan ruang untuk checkbox dan biarkan namanya turun baris. */
-            .pose-mini strong {
-                display: block;
-                padding-right: 18px;
-                line-height: 1.25;
-            }
-
-            /* Aturan mobile mengunci ilustrasi di 140px, jadi gambarnya mengambang
-               kecil di tengah kotak krem yang jauh lebih besar. Di landscape justru
-               ilustrasi ini isi utamanya. object-fit:contain + max-height:100%
-               sudah menjamin tidak mungkin meluap, jadi batas 140px tidak perlu. */
-            .pose-visual-img {
-                max-height: 100%;
-            }
-        }
-
-        /* Landscape yang sangat pendek: HP kecil yang bar alamat browsernya
-           tetap tampil (tinggi efektif tinggal ~280-320px). Tanpa blok ini
-           tombol "Mulai Latihan" jatuh di bawah lipatan layar. */
-        @media (orientation: landscape) and (max-height: 340px) {
-            .field-label {
-                font-size: 0.68rem;
-                margin-bottom: 2px;
-            }
-
-            .field-label-spaced {
-                margin-top: 4px;
+            .start-actions {
+                flex-direction: column;
+                align-items: stretch;
             }
 
             .btn-start-main {
-                font-size: 0.95rem;
-                padding: 8px 26px;
+                width: 100%;
             }
 
-            .time-selector,
-            .toggle-row {
+            .countdown-big {
+                font-size: 4.5rem;
+            }
+
+            .finish-content h2 {
+                font-size: 1.6rem;
+            }
+
+            .stats {
+                gap: 8px;
+                margin: 18px 0;
+            }
+
+            .stat-box {
+                padding: 12px 6px;
+            }
+
+            .stat-value {
+                font-size: 1.4rem;
+            }
+
+            .stat-label {
+                font-size: 0.72rem;
+            }
+
+            .modal-content {
+                padding: 18px 16px;
+                border-radius: 16px;
+            }
+        }
+
+        /* HP mendatar: layar awal dipadatkan supaya muat tanpa banyak scroll.
+           Di lanskap kita punya banyak LEBAR dan sedikit TINGGI, jadi dua
+           kolom dipertahankan dan jarak vertikal dirapatkan. */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .overlay {
+                padding: 10px 14px;
+            }
+
+            .start-content {
+                padding: 14px 18px;
+                border-radius: 16px;
+                max-width: 100%;
+            }
+
+            .start-head {
+                margin-bottom: 10px;
+            }
+
+            .brand-logo {
+                width: 34px;
+                height: 34px;
+                border-radius: 9px;
+            }
+
+            .brand h1 {
+                font-size: 1.25rem;
+            }
+
+            .brand p {
+                font-size: 0.75rem;
+                margin-top: 1px;
+            }
+
+            .start-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0 20px;
+            }
+
+            .start-grid .col + .col {
+                margin-top: 0;
+            }
+
+            .field {
+                margin-bottom: 10px;
+            }
+
+            .field-label {
+                font-size: 0.68rem;
                 margin-bottom: 5px;
+            }
+
+            .time-selector {
                 gap: 4px;
+            }
+
+            #timeSelector {
+                grid-template-columns: repeat(9, 1fr);
             }
 
             .time-btn {
-                padding: 4px 8px;
-                font-size: 0.7rem;
-                min-width: 30px;
+                padding: 6px 0;
+                font-size: 0.78rem;
+                min-height: 34px;
             }
 
-            .icon-toggle {
-                width: 32px;
-                height: 32px;
-                font-size: 0.95rem;
+            .toggle {
+                padding: 7px 10px;
+                font-size: 0.8rem;
+                gap: 8px;
+                flex-basis: 120px;
+            }
+
+            .toggle-state {
+                font-size: 0.62rem;
             }
 
             .pose-grid {
-                gap: 4px;
-                margin-bottom: 6px;
+                gap: 5px;
             }
 
             .pose-mini {
-                padding: 4px 6px;
-                font-size: 0.6rem;
+                padding: 5px 6px 5px 8px;
+                min-height: 36px;
+                gap: 7px;
             }
 
-            .overlay {
+            .pose-check {
+                width: 15px;
+                height: 15px;
+            }
+
+            .pose-mini-name {
+                font-size: 0.74rem;
+            }
+
+            .pose-mini-alias {
+                display: none;
+            }
+
+            .start-foot {
+                margin-top: 10px;
+                padding-top: 10px;
+                flex-direction: row;
+                align-items: center;
+                text-align: left;
+            }
+
+            .start-actions {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .btn-start-main {
+                width: auto;
+                font-size: 0.95rem;
+                padding: 9px 24px;
+                min-height: 40px;
+            }
+
+            .total-time {
+                font-size: 0.8rem;
+            }
+
+            .total-time strong {
+                font-size: 0.9rem;
+            }
+
+            .install-hint {
+                font-size: 0.75rem;
                 padding: 6px 10px;
+            }
+
+            .countdown-big {
+                font-size: 4rem;
+                margin: 4px 0 8px;
+            }
+
+            .stats {
+                margin: 12px 0;
+                gap: 8px;
+            }
+
+            .stat-box {
+                padding: 10px 6px;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .finish-content h2 {
+                font-size: 1.5rem;
+                margin-bottom: 4px;
+            }
+
+            .modal-content {
+                padding: 14px 16px;
+                max-height: 94dvh;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .countdown-big,
+            .rest-visual .ic {
+                animation: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Rotate Warning -->
-    <div class="rotate-warning">
-        <div style="font-size: 3rem; margin-bottom: 20px;">📱</div>
-        <h2>Putar HP ke Landscape</h2>
-        <p>Aplikasi ini optimal digunakan dalam mode horizontal (landscape)</p>
-        
-        <button class="install-btn" id="installBtn" onclick="promptInstall()">⬇️ Install Aplikasi</button>
-        <div class="install-hint" id="iosHint">
-            📲 Tap <strong>Share</strong> lalu <strong>Add to Home Screen</strong> untuk install
-        </div>
-    </div>
+    <!-- Kumpulan ikon SVG. Dipakai lewat <use href="#i-nama">. -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="i-gear" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </symbol>
+        <symbol id="i-volume" viewBox="0 0 24 24">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </symbol>
+        <symbol id="i-volume-off" viewBox="0 0 24 24">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+            <path d="M23 9l-6 6M17 9l6 6"></path>
+        </symbol>
+        <symbol id="i-music" viewBox="0 0 24 24">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </symbol>
+        <symbol id="i-music-off" viewBox="0 0 24 24">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+            <path d="M3 3l18 18"></path>
+        </symbol>
+        <symbol id="i-play" viewBox="0 0 24 24">
+            <path d="M6 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 6 4.5z"></path>
+        </symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24">
+            <rect x="5" y="4" width="4.5" height="16" rx="1"></rect>
+            <rect x="14.5" y="4" width="4.5" height="16" rx="1"></rect>
+        </symbol>
+        <symbol id="i-stop" viewBox="0 0 24 24">
+            <rect x="5" y="5" width="14" height="14" rx="2"></rect>
+        </symbol>
+        <symbol id="i-repeat" viewBox="0 0 24 24">
+            <path d="M23 4v6h-6M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </symbol>
+        <symbol id="i-close" viewBox="0 0 24 24">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+        </symbol>
+        <symbol id="i-phone" viewBox="0 0 24 24">
+            <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+            <path d="M12 18h.01"></path>
+        </symbol>
+        <symbol id="i-share" viewBox="0 0 24 24">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"></path>
+        </symbol>
+        <symbol id="i-wind" viewBox="0 0 24 24">
+            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+        </symbol>
+        <symbol id="i-undo" viewBox="0 0 24 24">
+            <path d="M3 7v6h6"></path>
+            <path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path>
+        </symbol>
+    </svg>
 
-    <!-- App Container -->
-    <div class="app-container">
-        <!-- Left Panel -->
-        <div class="left-panel">
-            <button class="btn btn-settings" onclick="openSettings()">⚙️</button>
-            
-            <div class="timer-container">
-                <svg class="timer-svg" viewBox="0 0 100 100">
-                    <circle class="timer-circle" cx="50" cy="50" r="45"></circle>
-                    <circle class="timer-progress" id="progressCircle" cx="50" cy="50" r="45" 
-                            stroke-dasharray="283" stroke-dashoffset="0"></circle>
-                </svg>
-                <div class="timer-text" id="timerDisplay">20</div>
-                <div class="pulse-ring" id="pulseRing" style="display: none;"></div>
+    <!-- Layar latihan -->
+    <main class="app" id="app">
+        <section class="left-panel">
+            <div class="timer-block">
+                <div class="timer-container">
+                    <svg class="timer-svg" viewBox="0 0 100 100" aria-hidden="true">
+                        <circle class="timer-circle" cx="50" cy="50" r="45"></circle>
+                        <circle class="timer-progress" id="progressCircle" cx="50" cy="50" r="45"
+                                stroke-dasharray="283" stroke-dashoffset="0"></circle>
+                    </svg>
+                    <div class="timer-text" id="timerDisplay" aria-live="off">20</div>
+                </div>
+                <div class="phase-label" id="phaseLabel">Persiapan</div>
             </div>
-            
-            <div class="phase-label" id="phaseLabel">Persiapan</div>
-            
-            <div class="current-pose-card" id="currentCard" style="border-color: var(--color-high);">
-                <div class="pose-number" id="poseNumber">Pose 1 dari 8</div>
-                <div class="pose-icon" id="poseIcon">🧘</div>
-                <div class="pose-title" id="poseTitle">High Plank</div>
-            </div>
-            
+
             <div class="controls">
-                <button class="btn btn-secondary hidden" id="btnPause" onclick="togglePause()">⏸️ Pause</button>
-                <button class="btn btn-primary" id="btnStart" onclick="startWorkout()">▶️ Mulai</button>
+                <button class="btn btn-secondary" id="btnPause" onclick="togglePause()">
+                    <svg class="ic solid"><use href="#i-pause"></use></svg>
+                    <span id="btnPauseLabel">Jeda</span>
+                </button>
+                <button class="btn btn-ghost" id="btnStop" onclick="stopWorkout()">
+                    <svg class="ic"><use href="#i-stop"></use></svg>
+                    <span>Berhenti</span>
+                </button>
             </div>
-        </div>
+        </section>
 
-        <!-- Right Panel -->
-        <div class="right-panel">
-            <div class="progress-strip" id="progressStrip">
-                <!-- Generated by JS -->
-            </div>
-            
-            <!-- Pose info panel -->
-            <div class="pose-info-panel" id="poseInfoPanel">
+        <section class="right-panel">
+            <div class="progress-strip" id="progressStrip" aria-hidden="true"></div>
+
+            <div class="pose-info-panel">
                 <div class="pose-info-box current" id="currentPoseBox">
-                    <div class="pose-info-label">Saat Ini</div>
-                    <div class="pose-info-name" id="currentPoseNameMobile">High Plank</div>
+                    <div class="pose-info-label">Sekarang</div>
+                    <div class="pose-info-name" id="currentPoseName">Plank Tangan Lurus</div>
+                    <div class="pose-info-alias" id="currentPoseAlias">High Plank</div>
                 </div>
-                <div class="pose-info-box next" id="nextPoseBox">
-                    <div class="pose-info-label">Selanjutnya</div>
-                    <div class="pose-info-name" id="nextPoseNameMobile">Low Plank</div>
-                </div>
-            </div>
-            
-            <!-- Pose visual -->
-            <div class="pose-visual" id="poseVisual">
-                <img class="pose-visual-img" id="poseVisualImg" src="" alt="Pose Illustration">
-            </div>
-            
-            <div class="next-preview" id="nextPreview">
-                <div>
-                    <div class="next-label">Selanjutnya</div>
-                    <div style="font-weight: bold;" id="nextPoseName">Low Plank</div>
+                <div class="pose-info-box next">
+                    <div class="pose-info-label">Berikutnya</div>
+                    <div class="pose-info-name" id="nextPoseName">Plank Siku</div>
+                    <div class="pose-info-alias" id="nextPoseAlias">Low Plank</div>
                 </div>
             </div>
-            
-            <div class="instruction-box" id="instructionBox">
-                <div class="instruction-title">
-                    <span>📋 Panduan Teknis</span>
-                    <span class="tts-indicator" id="ttsIndicator">
-                        🔊 TTS Aktif
-                    </span>
-                </div>
-                <div class="instruction-text" id="instructionText">
-                    Bertumpu pada telapak tangan dengan tangan lurus sejajar bahu. Jaga garis lurus dari kepala hingga tumit.
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Start Overlay -->
+            <div class="pose-visual">
+                <img class="pose-visual-img" id="poseVisualImg" src="1_high_plank.png" alt="Ilustrasi gerakan">
+                <div class="rest-visual hidden" id="restVisual">
+                    <svg class="ic"><use href="#i-wind"></use></svg>
+                    <span>Atur napas</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button class="btn-icon btn-settings-float" onclick="openSettings()" title="Teks panduan suara" aria-label="Teks panduan suara">
+        <svg class="ic"><use href="#i-gear"></use></svg>
+    </button>
+
+    <!-- Layar awal -->
     <div class="overlay" id="startOverlay">
         <div class="start-content">
-            <div class="field-label">Durasi Pose</div>
-            <div class="time-selector" id="timeSelector"></div>
+            <header class="start-head">
+                <div class="brand">
+                    <img class="brand-logo" src="favicon.svg" alt="" width="52" height="52">
+                    <div>
+                        <h1>Plank</h1>
+                        <p>Latihan perut 160 detik. Delapan gerakan, dipandu suara.</p>
+                    </div>
+                </div>
+                <button class="btn-icon" onclick="openSettings()" title="Teks panduan suara" aria-label="Teks panduan suara">
+                    <svg class="ic"><use href="#i-gear"></use></svg>
+                </button>
+            </header>
 
-            <div class="field-label field-label-spaced">Durasi Jeda</div>
-            <div class="time-selector" id="restSelector"></div>
-            
-            <div class="toggle-row">
-                <button class="icon-toggle active" id="voiceToggle" onclick="toggleVoice()" title="Suara Panduan">🔊</button>
-                <button class="icon-toggle active" id="musicToggle" onclick="toggleMusic()" title="Musik">🎵</button>
+            <div class="start-grid">
+                <div class="col">
+                    <div class="field">
+                        <div class="field-label"><span>Lama tiap gerakan</span><small>detik</small></div>
+                        <div class="time-selector" id="timeSelector"></div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label"><span>Jeda antar gerakan</span><small>detik</small></div>
+                        <div class="time-selector" id="restSelector"></div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label"><span>Suara</span></div>
+                        <div class="toggle-row">
+                            <button class="toggle active" id="voiceToggle" onclick="toggleVoice()" aria-pressed="true">
+                                <svg class="ic"><use id="voiceIcon" href="#i-volume"></use></svg>
+                                <span>Panduan suara</span>
+                                <span class="toggle-state" id="voiceState">Nyala</span>
+                            </button>
+                            <button class="toggle active" id="musicToggle" onclick="toggleMusic()" aria-pressed="true">
+                                <svg class="ic"><use id="musicIcon" href="#i-music"></use></svg>
+                                <span>Musik latar</span>
+                                <span class="toggle-state" id="musicState">Nyala</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="field">
+                        <div class="field-label"><span>Gerakan</span><small id="poseCountLabel">8 dipilih</small></div>
+                        <div class="pose-grid" id="poseGrid"></div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="pose-grid" id="poseGrid"></div>
-            
-            <button class="btn btn-primary btn-start-main" onclick="startCountdown()">
-                🚀 Mulai Latihan
-            </button>
+
+            <footer class="start-foot">
+                <div class="total-time" id="totalTime">Total sekitar <strong>4 menit 28 detik</strong></div>
+                <div class="start-actions">
+                    <button class="btn btn-secondary hidden" id="installBtn" onclick="promptInstall()">
+                        <svg class="ic"><use href="#i-phone"></use></svg>
+                        <span>Pasang di HP</span>
+                    </button>
+                    <button class="btn btn-primary btn-start-main" id="btnStartMain" onclick="startCountdown()">
+                        <svg class="ic solid"><use href="#i-play"></use></svg>
+                        <span>Mulai latihan</span>
+                    </button>
+                </div>
+                <div class="install-hint hidden" id="iosHint">
+                    Mau dipasang di layar utama? Ketuk tombol <svg class="ic"><use href="#i-share"></use></svg> <strong>Bagikan</strong> di Safari, lalu pilih <strong>Tambahkan ke Layar Utama</strong>.
+                </div>
+            </footer>
         </div>
     </div>
 
-    <!-- Countdown Overlay -->
-    <div class="overlay hidden" id="countdownOverlay">
+    <!-- Hitung mundur -->
+    <div class="overlay translucent hidden" id="countdownOverlay">
         <div class="countdown-big" id="countdownNumber">3</div>
-        <p style="font-size: 1.2rem;">Bersiap...</p>
+        <p style="font-size: 1.2rem;">Bersiap di posisi</p>
     </div>
 
-    <!-- Finish Overlay -->
+    <!-- Selesai -->
     <div class="overlay hidden" id="finishOverlay">
         <div class="finish-content">
-            <h2>🎉 Latihan Selesai!</h2>
-            <p>Core Transformation 160 detik berhasil dilakukan</p>
-            
+            <h2>Latihan selesai</h2>
+            <p>Semua gerakan sudah dijalani. Minum dulu, lalu istirahat.</p>
+
             <div class="stats">
                 <div class="stat-box">
                     <div class="stat-value" id="finishPoseCount">8</div>
-                    <div class="stat-label">Pose</div>
+                    <div class="stat-label">Gerakan</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="totalTimeStat">4:25</div>
-                    <div class="stat-label">Total Waktu</div>
+                    <div class="stat-value" id="totalTimeStat">4:28</div>
+                    <div class="stat-label">Total waktu</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-value" id="activeTimeStat">160</div>
-                    <div class="stat-label">Detik Aktif</div>
+                    <div class="stat-label">Detik menahan</div>
                 </div>
             </div>
-            
-            <button class="btn btn-primary" style="margin: 0 auto; display: flex;" onclick="resetWorkout()">🔄 Ulangi</button>
+
+            <div class="finish-actions">
+                <button class="btn btn-primary" onclick="resetWorkout(true)">
+                    <svg class="ic"><use href="#i-repeat"></use></svg>
+                    <span>Ulangi</span>
+                </button>
+                <button class="btn btn-secondary" onclick="resetWorkout(false)">
+                    <span>Kembali ke pengaturan</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Background Music -->
-    <audio id="bgmAudio" src="zimmer.MP3" loop></audio>
-
-    <!-- Settings Modal -->
-    <div class="modal" id="settingsModal">
+    <!-- Modal teks panduan suara -->
+    <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>⚙️ Edit Instruksi Suara</h2>
-                <button class="close-btn" onclick="closeSettings()">×</button>
+                <h2 id="settingsTitle"><svg class="ic"><use href="#i-gear"></use></svg> Teks panduan suara</h2>
+                <button class="btn-icon" onclick="closeSettings()" aria-label="Tutup">
+                    <svg class="ic"><use href="#i-close"></use></svg>
+                </button>
             </div>
-            
-            <div style="margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.9rem;">
-                <strong>💡 Tips:</strong> Edit teks di bawah untuk mengubah instruksi suara. 
-                Klik "Test" untuk preview. Perubahan tersimpan otomatis.
+
+            <div class="modal-tip">
+                Ubah kalimat yang dibacakan di awal tiap gerakan. Timer baru berjalan setelah kalimatnya selesai dibacakan, jadi akhiri dengan kata <strong>Mulai</strong>. Perubahan tersimpan otomatis saat jendela ini ditutup.
             </div>
 
             <div id="settingsContent"></div>
-            
+
             <div class="voice-test">
-                <strong>Pengaturan Suara</strong>
+                <strong>Suara</strong>
                 <div class="volume-control">
-                    <span>Volume:</span>
-                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+                    <span>Volume</span>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1" aria-label="Volume suara panduan">
                     <span id="volumeValue">100%</span>
                 </div>
                 <div class="volume-control">
-                    <span>Kecepatan:</span>
-                    <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.1" value="0.9">
+                    <span>Kecepatan</span>
+                    <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.1" value="0.9" aria-label="Kecepatan suara panduan">
                     <span id="rateValue">0.9x</span>
                 </div>
-                <button class="btn btn-secondary" style="margin-top: 10px; width: 100%;" onclick="testVoiceSettings()">
-                    🔊 Test Suara
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="testVoiceSettings()">
+                    <svg class="ic"><use href="#i-volume"></use></svg>
+                    <span>Coba suara</span>
+                </button>
+                <button class="btn btn-ghost" onclick="resetTtsTexts()">
+                    <svg class="ic"><use href="#i-undo"></use></svg>
+                    <span>Kembalikan teks bawaan</span>
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Data Pose (sesuai gambar)
+        // ── Data gerakan ──
+        // name: nama yang tampil. alias: istilah Inggris yang lebih dikenal, ditampilkan dalam kurung.
+        // tts: kalimat yang dibacakan di awal gerakan. Timer jalan setelah kalimat ini selesai.
         const poses = [
             {
                 id: 'high',
-                name: 'High Plank',
+                name: 'Plank Tangan Lurus',
+                alias: 'High Plank',
                 color: '#E57373',
-                icon: '🧘‍♂️',
                 image: '1_high_plank.png',
-                instruction: 'Bertumpu pada telapak tangan dengan tangan lurus sejajar bahu. Jaga garis lurus tubuh dari kepala hingga tumit. Core tetap kencang.',
-                tts: {
-                    start: "High pleng. Posisi telapak tangan lurus sejajar bahu. Mulai."
-                    }
+                tts: 'Plank tangan lurus. Telapak tangan di lantai, lengan lurus sejajar bahu. Badan satu garis dari kepala sampai tumit. Mulai.'
             },
             {
                 id: 'low',
-                name: 'Low Plank',
+                name: 'Plank Siku',
+                alias: 'Low Plank',
                 color: '#64B5F6',
-                icon: '🛌',
                 image: '2_low_plank.png',
-                instruction: 'Posisi siku tepat di bawah bahu (forearm plank). Lengan bawah menempel lantai untuk stabilitas maksimal. Jaga garis lurus tubuh.',
-                tts: {
-                    start: "Low pleng. Siku tepat di bawah bahu. Stabilitas maksimal. Mulai."
-                    }
+                tts: 'Plank siku. Siku tepat di bawah bahu, lengan bawah menempel lantai. Badan tetap lurus. Mulai.'
             },
             {
                 id: 'side_r',
-                name: 'Side Plank Kanan',
+                name: 'Plank Samping Kanan',
+                alias: 'Side Plank',
                 color: '#81C784',
-                icon: '➡️',
                 image: '3_side_plank_kanan.png',
-                instruction: 'Menghadap ke kanan, tumpuan pada satu sisi (siku atau tangan). Anggukan pinggul untuk melatih otot perut samping atau obliques.',
-                tts: {
-                    start: "Side pleng Kanan. Menghadap ke kanan. Angkat pinggul. Mulai."
-                    }
+                tts: 'Plank samping kanan. Bertumpu di sisi kanan, angkat pinggul. Mulai.'
             },
             {
                 id: 'side_l',
-                name: 'Side Plank Kiri',
+                name: 'Plank Samping Kiri',
+                alias: 'Side Plank',
                 color: '#FFD54F',
-                icon: '⬅️',
                 image: '4_side_plank_kiri.png',
-                instruction: 'Ulangi posisi menyamping pada sisi kiri untuk keseimbangan kekuatan lateral. Pastikan bahu dan siku sejajar.',
-                tts: {
-                    start: "Side pleng Kiri. Mengharap ke kiri. Angkat pinggul. Mulai."
-                    }
+                tts: 'Plank samping kiri. Bertumpu di sisi kiri, angkat pinggul. Mulai.'
             },
             {
                 id: 'reverse_table',
-                name: 'Reverse Table Top',
+                name: 'Meja Terbalik',
+                alias: 'Reverse Table Top',
                 color: '#BA68C8',
-                icon: '🪑',
                 image: '5_reverse_table_top.png',
-                instruction: 'Posisi menghadap ke atas dengan lutut ditekuk 90 derajat. Tangan menopang dari belakang. Angkat panggul memperkuat core dan panggul.',
-                tts: {
-                    start: "Reverse Tabell Top. Menghadap ke atas. Lutut 90 derajat. Mulai."
-                    }
+                tts: 'Meja terbalik. Menghadap ke atas, lutut ditekuk, tangan menopang dari belakang. Angkat panggul. Mulai.'
             },
             {
                 id: 'reverse',
-                name: 'Reverse Plank',
+                name: 'Plank Terbalik',
+                alias: 'Reverse Plank',
                 color: '#FFB74D',
-                icon: '🌉',
                 image: '6_reverse_plank.png',
-                instruction: 'Posisi telentang dengan kaki lurus, tumit menekan lantai. Angkat panggul membentuk garis lurus. Melatih otot bagian belakang tubuh seperti bokong dan paha belakang.',
-                tts: {
-                    start: "Reverse pleng. Telentang, kaki lurus. Angkat panggul. Mulai."
-                    }
+                tts: 'Plank terbalik. Telentang, kaki lurus, tumit menekan lantai. Angkat panggul sampai badan lurus. Mulai.'
             },
             {
                 id: 'bear',
-                name: 'Bear Pose',
+                name: 'Pose Beruang',
+                alias: 'Bear Pose',
                 color: '#4DB6AC',
-                icon: '🐻',
                 image: '7_bear_pose.png',
-                instruction: 'Posisi merangkak dengan lutut terangkat 5-10 cm dari lantai. Tangan lurus di bawah bahu. Core dalam aktif untuk stabilitas total.',
-                tts: {
-                    start: "Beerr Poss. Merangkak, lutut terangkat dari lantai. Mulai."
-                    }
+                tts: 'Pose beruang. Merangkak, lutut terangkat sedikit dari lantai. Tangan lurus di bawah bahu. Mulai.'
             },
             {
                 id: 'boat',
-                name: 'Boat Pose',
+                name: 'Pose Perahu',
+                alias: 'Boat Pose',
                 color: '#F06292',
-                icon: '⛵',
                 image: '8_boat_pose.png',
-                instruction: 'Duduk seimbang dengan kaki dan punggung terangkat membentuk huruf V. Tangan lurus ke depan untuk kontraksi core akhir yang maksimal.',
-                tts: {
-                    start: "Boat Poss. Duduk seimbang bentuk huruf V. Kontraksi akhir. Mulai."
-                    }
+                tts: 'Pose perahu. Duduk seimbang, kaki dan punggung terangkat membentuk huruf V. Tangan lurus ke depan. Mulai.'
             }
         ];
+        const DEFAULT_TTS = Object.fromEntries(poses.map(p => [p.id, p.tts]));
+        // Kunci penyimpanan teks panduan. Versi 2 karena kalimat bawaan
+        // berubah ke nama Indonesia; teks lama yang tersimpan tidak dipakai lagi.
+        const TTS_KEY = 'plank_tts_v2_';
 
-        // State
+        // ── State ──
         let currentPoseIndex = -1;
         let isResting = false;
         let timeLeft = 0;
         let totalTime = 0;
         let isPaused = false;
         let timerInterval = null;
+        let restTimeouts = [];
+        let countInterval = null;
         let isWorkoutActive = false;
         let ttsEnabled = true;
         let musicEnabled = true;
         let voiceVolume = 1.0;
         let voiceRate = 0.9;
         let deferredPrompt = null;
+        let wakeLock = null;
         const BGM_NORMAL_VOLUME = 0.35;
         const BGM_DIM_VOLUME = 0.06;
         let bgmRestoreTimeout = null;
@@ -1239,78 +1734,98 @@
         let restDuration = 15;
         let enabledPoseIds = poses.map(p => p.id);
         let workoutPoses = [];
-        
-        // DOM Elements
+
+        // ── Musik latar ──
+        // Elemen audio baru dibuat saat benar-benar dibutuhkan, supaya berkas
+        // musik tidak ikut diunduh hanya karena halaman dibuka.
+        let bgmAudio = null;
+
+        function bgmSource() {
+            const probe = document.createElement('audio');
+            const opus = probe.canPlayType('audio/ogg; codecs="opus"');
+            return opus ? 'zimmer.opus' : 'zimmer.mp3';
+        }
+
+        function ensureBgm() {
+            if (bgmAudio) return bgmAudio;
+            bgmAudio = new Audio();
+            bgmAudio.loop = true;
+            bgmAudio.preload = 'none';
+            bgmAudio.src = bgmSource();
+            bgmAudio.volume = BGM_NORMAL_VOLUME;
+            return bgmAudio;
+        }
+
+        // ── Elemen ──
         const progressCircle = document.getElementById('progressCircle');
         const timerDisplay = document.getElementById('timerDisplay');
         const phaseLabel = document.getElementById('phaseLabel');
-        const poseNumber = document.getElementById('poseNumber');
-        const poseTitle = document.getElementById('poseTitle');
-        const poseIcon = document.getElementById('poseIcon');
-        const currentCard = document.getElementById('currentCard');
-        const instructionText = document.getElementById('instructionText');
-        const nextPreview = document.getElementById('nextPreview');
+        const currentPoseName = document.getElementById('currentPoseName');
+        const currentPoseAlias = document.getElementById('currentPoseAlias');
         const nextPoseName = document.getElementById('nextPoseName');
-        const currentPoseNameMobile = document.getElementById('currentPoseNameMobile');
-        const nextPoseNameMobile = document.getElementById('nextPoseNameMobile');
+        const nextPoseAlias = document.getElementById('nextPoseAlias');
         const currentPoseBox = document.getElementById('currentPoseBox');
         const poseVisualImg = document.getElementById('poseVisualImg');
-        const ttsIndicator = document.getElementById('ttsIndicator');
-        const btnStart = document.getElementById('btnStart');
+        const restVisual = document.getElementById('restVisual');
         const btnPause = document.getElementById('btnPause');
+        const btnPauseLabel = document.getElementById('btnPauseLabel');
         const progressStrip = document.getElementById('progressStrip');
-        const pulseRing = document.getElementById('pulseRing');
-        const bgmAudio = document.getElementById('bgmAudio');
-        
-        // Initialize
+
+        function displayName(pose) {
+            return pose.alias ? `${pose.name} (${pose.alias})` : pose.name;
+        }
+
+        function enabledPoses() {
+            return poses.filter(p => enabledPoseIds.includes(p.id));
+        }
+
+        // ── Inisialisasi ──
         function init() {
             loadAppSettings();
+            loadTtsTexts();
             renderTimeSelector();
             renderRestSelector();
             renderProgressStrip();
             renderPoseGrid();
             loadSettings();
             checkInstallStatus();
-            
-            // Load saved TTS settings or use defaults
-            poses.forEach((pose) => {
-                const saved = localStorage.getItem(`tts_${pose.id}`);
-                if (saved) {
-                    const savedObj = JSON.parse(saved);
-                    if (savedObj.start) pose.tts.start = savedObj.start;
-                }
-                // Normalize pronunciation
-                pose.tts.start = pose.tts.start.replace(/plank/gi, 'pleng');
-            });
-            
-            // Close settings modal when clicking outside
+            showIdlePose();
+            updateTotalTime();
+
             document.getElementById('settingsModal').addEventListener('click', (e) => {
                 if (e.target.id === 'settingsModal') closeSettings();
             });
-            
-            // Set initial pose visual
-            const firstEnabled = poses.find(p => enabledPoseIds.includes(p.id));
-            if (poseVisualImg && firstEnabled && firstEnabled.image) {
-                poseVisualImg.src = firstEnabled.image;
-            }
-            if (currentPoseNameMobile && firstEnabled) {
-                currentPoseNameMobile.textContent = firstEnabled.name;
-            }
-            
-            timerDisplay.textContent = poseDuration;
-            
-            // Volume and rate listeners
+
             document.getElementById('volumeSlider').addEventListener('input', (e) => {
-                voiceVolume = e.target.value;
+                voiceVolume = parseFloat(e.target.value);
                 document.getElementById('volumeValue').textContent = Math.round(voiceVolume * 100) + '%';
             });
-            
+
             document.getElementById('rateSlider').addEventListener('input', (e) => {
-                voiceRate = e.target.value;
+                voiceRate = parseFloat(e.target.value);
                 document.getElementById('rateValue').textContent = voiceRate + 'x';
             });
+
+            // Pemanasan daftar suara TTS (di Chrome daftarnya baru terisi setelah event ini).
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
         }
-        
+
+        function loadTtsTexts() {
+            poses.forEach((pose) => {
+                const saved = localStorage.getItem(TTS_KEY + pose.id);
+                if (saved && saved.trim()) pose.tts = saved;
+            });
+        }
+
+        // "plank" dibaca mesin suara Indonesia sebagai "plang-k"; "pleng" lebih mirip
+        // ucapan aslinya. Hanya dipakai saat dibacakan; teks yang tampil tetap "plank".
+        function normalizeTts(text) {
+            return text.replace(/plank/gi, 'pleng');
+        }
+
         function saveAppSettings() {
             localStorage.setItem('poseDuration', poseDuration);
             localStorage.setItem('restDuration', restDuration);
@@ -1318,45 +1833,50 @@
             localStorage.setItem('musicEnabled', JSON.stringify(musicEnabled));
             localStorage.setItem('enabledPoseIds', JSON.stringify(enabledPoseIds));
         }
-        
+
         function loadAppSettings() {
-            const savedPoseDuration = localStorage.getItem('poseDuration');
-            if (savedPoseDuration !== null) poseDuration = parseInt(savedPoseDuration, 10);
-            
-            const savedRestDuration = localStorage.getItem('restDuration');
-            if (savedRestDuration !== null) restDuration = parseInt(savedRestDuration, 10);
-            
-            const savedTts = localStorage.getItem('ttsEnabled');
-            if (savedTts !== null) ttsEnabled = JSON.parse(savedTts);
-            
-            const savedMusic = localStorage.getItem('musicEnabled');
-            if (savedMusic !== null) musicEnabled = JSON.parse(savedMusic);
-            
-            const savedEnabled = localStorage.getItem('enabledPoseIds');
-            if (savedEnabled !== null) {
-                const parsed = JSON.parse(savedEnabled);
-                if (parsed.length > 0) enabledPoseIds = parsed;
+            const savedPoseDuration = parseInt(localStorage.getItem('poseDuration'), 10);
+            if (!isNaN(savedPoseDuration)) poseDuration = savedPoseDuration;
+
+            const savedRestDuration = parseInt(localStorage.getItem('restDuration'), 10);
+            if (!isNaN(savedRestDuration)) restDuration = savedRestDuration;
+
+            try {
+                const savedTts = localStorage.getItem('ttsEnabled');
+                if (savedTts !== null) ttsEnabled = JSON.parse(savedTts);
+
+                const savedMusic = localStorage.getItem('musicEnabled');
+                if (savedMusic !== null) musicEnabled = JSON.parse(savedMusic);
+
+                const savedEnabled = localStorage.getItem('enabledPoseIds');
+                if (savedEnabled !== null) {
+                    const parsed = JSON.parse(savedEnabled).filter(id => poses.some(p => p.id === id));
+                    if (parsed.length > 0) enabledPoseIds = parsed;
+                }
+            } catch (e) {
+                // Data tersimpan rusak: pakai bawaan saja.
             }
-            
-            // Update toggle buttons visuals
-            const voiceBtn = document.getElementById('voiceToggle');
-            if (voiceBtn) {
-                voiceBtn.textContent = ttsEnabled ? '🔊' : '🔇';
-                voiceBtn.classList.toggle('active', ttsEnabled);
-                voiceBtn.classList.toggle('inactive', !ttsEnabled);
-            }
-            const musicBtn = document.getElementById('musicToggle');
-            if (musicBtn) {
-                musicBtn.textContent = musicEnabled ? '🎵' : '🔕';
-                musicBtn.classList.toggle('active', musicEnabled);
-                musicBtn.classList.toggle('inactive', !musicEnabled);
-            }
+
+            renderToggle('voice');
+            renderToggle('music');
         }
-        
+
+        function renderToggle(which) {
+            const on = which === 'voice' ? ttsEnabled : musicEnabled;
+            const btn = document.getElementById(which + 'Toggle');
+            const icon = document.getElementById(which + 'Icon');
+            const state = document.getElementById(which + 'State');
+            const base = which === 'voice' ? '#i-volume' : '#i-music';
+            icon.setAttribute('href', on ? base : base + '-off');
+            state.textContent = on ? 'Nyala' : 'Mati';
+            btn.classList.toggle('active', on);
+            btn.classList.toggle('inactive', !on);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
+
         function renderProgressStrip() {
             progressStrip.innerHTML = '';
-            const activePoses = poses.filter(p => enabledPoseIds.includes(p.id));
-            activePoses.forEach((pose, index) => {
+            enabledPoses().forEach((pose, index) => {
                 const div = document.createElement('div');
                 div.className = 'progress-item';
                 div.style.color = pose.color;
@@ -1364,192 +1884,221 @@
                 progressStrip.appendChild(div);
             });
         }
-        
+
         function renderPoseGrid() {
             const grid = document.getElementById('poseGrid');
             grid.innerHTML = '';
             poses.forEach((pose, index) => {
-                const div = document.createElement('div');
                 const isChecked = enabledPoseIds.includes(pose.id);
-                div.className = 'pose-mini' + (isChecked ? '' : ' disabled');
-                div.style.borderColor = pose.color;
-                div.innerHTML = `
+                const label = document.createElement('label');
+                label.className = 'pose-mini' + (isChecked ? '' : ' disabled');
+                label.style.borderColor = pose.color;
+                label.innerHTML = `
                     <input type="checkbox" class="pose-check" ${isChecked ? 'checked' : ''} data-id="${pose.id}">
-                    <strong>${index + 1}. ${pose.name}</strong><br><small class="pose-time">${poseDuration} detik</small>
+                    <span class="pose-mini-text">
+                        <span class="pose-mini-name">${index + 1}. ${pose.name}</span>
+                        <span class="pose-mini-alias">${pose.alias}</span>
+                    </span>
                 `;
-                div.querySelector('.pose-check').addEventListener('change', (e) => {
+                label.querySelector('.pose-check').addEventListener('change', (e) => {
                     if (e.target.checked) {
                         if (!enabledPoseIds.includes(pose.id)) enabledPoseIds.push(pose.id);
-                        div.classList.remove('disabled');
+                        label.classList.remove('disabled');
                     } else {
                         enabledPoseIds = enabledPoseIds.filter(id => id !== pose.id);
-                        div.classList.add('disabled');
+                        label.classList.add('disabled');
                     }
                     enabledPoseIds = poses.map(p => p.id).filter(id => enabledPoseIds.includes(id));
                     renderProgressStrip();
+                    updateTotalTime();
+                    showIdlePose();
                     saveAppSettings();
                 });
-                grid.appendChild(div);
+                grid.appendChild(label);
             });
         }
-        
+
         function renderTimeSelector() {
             const container = document.getElementById('timeSelector');
             const options = [20, 25, 30, 35, 40, 45, 50, 55, 60];
+            if (!options.includes(poseDuration)) poseDuration = 20;
             container.innerHTML = '';
             options.forEach(sec => {
                 const btn = document.createElement('button');
                 btn.className = 'time-btn' + (sec === poseDuration ? ' active' : '');
-                btn.textContent = sec + 'd';
+                btn.textContent = sec;
+                btn.setAttribute('aria-label', sec + ' detik');
                 btn.onclick = () => {
                     poseDuration = sec;
                     container.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    renderPoseGrid();
+                    timerDisplay.textContent = poseDuration;
+                    updateTotalTime();
                     saveAppSettings();
                 };
                 container.appendChild(btn);
             });
         }
-        
+
         function renderRestSelector() {
             const container = document.getElementById('restSelector');
             const options = [5, 10, 15, 20];
+            if (!options.includes(restDuration)) restDuration = 15;
             container.innerHTML = '';
             options.forEach(sec => {
                 const btn = document.createElement('button');
                 btn.className = 'time-btn' + (sec === restDuration ? ' active' : '');
-                btn.textContent = sec + 'd';
+                btn.textContent = sec;
+                btn.setAttribute('aria-label', sec + ' detik');
                 btn.onclick = () => {
                     restDuration = sec;
                     container.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    updateTotalTime();
                     saveAppSettings();
                 };
                 container.appendChild(btn);
             });
         }
-        
+
+        function formatDuration(totalSeconds) {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            if (mins === 0) return `${secs} detik`;
+            if (secs === 0) return `${mins} menit`;
+            return `${mins} menit ${secs} detik`;
+        }
+
+        function updateTotalTime() {
+            const n = enabledPoseIds.length;
+            const el = document.getElementById('totalTime');
+            const countLabel = document.getElementById('poseCountLabel');
+            const btn = document.getElementById('btnStartMain');
+            countLabel.textContent = n === poses.length ? 'semua dipilih' : `${n} dipilih`;
+            if (n === 0) {
+                el.innerHTML = 'Pilih minimal satu gerakan';
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                return;
+            }
+            btn.disabled = false;
+            btn.style.opacity = '';
+            const total = n * poseDuration + Math.max(0, n - 1) * restDuration + 3;
+            el.innerHTML = `Total sekitar <strong>${formatDuration(total)}</strong>`;
+        }
+
         function toggleVoice() {
             ttsEnabled = !ttsEnabled;
-            const btn = document.getElementById('voiceToggle');
-            btn.textContent = ttsEnabled ? '🔊' : '🔇';
-            btn.classList.toggle('active', ttsEnabled);
-            btn.classList.toggle('inactive', !ttsEnabled);
+            renderToggle('voice');
+            if (!ttsEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
             saveAppSettings();
         }
-        
+
         function toggleMusic() {
             musicEnabled = !musicEnabled;
-            const btn = document.getElementById('musicToggle');
-            btn.textContent = musicEnabled ? '🎵' : '🔕';
-            btn.classList.toggle('active', musicEnabled);
-            btn.classList.toggle('inactive', !musicEnabled);
-            if (!musicEnabled && bgmAudio) {
+            renderToggle('music');
+            if (musicEnabled) {
+                // Musik baru dinyalakan: mulai muat berkasnya sekarang supaya
+                // langsung terdengar saat latihan dimulai.
+                const bgm = ensureBgm();
+                bgm.preload = 'auto';
+                bgm.load();
+            } else if (bgmAudio) {
                 bgmAudio.pause();
             }
             saveAppSettings();
         }
-        
-        // TTS Functions
+
+        // ── Suara panduan ──
         function dimBgm() {
             if (!bgmAudio) return;
             bgmAudio.volume = BGM_DIM_VOLUME;
             if (bgmRestoreTimeout) clearTimeout(bgmRestoreTimeout);
         }
-        
+
         function restoreBgm() {
-            if (!bgmAudio) return;
-            bgmAudio.volume = BGM_NORMAL_VOLUME;
+            if (bgmAudio) bgmAudio.volume = BGM_NORMAL_VOLUME;
             bgmRestoreTimeout = null;
         }
-        
+
         function scheduleBgmRestore(delay) {
             if (bgmRestoreTimeout) clearTimeout(bgmRestoreTimeout);
             bgmRestoreTimeout = setTimeout(restoreBgm, delay);
         }
-        
+
         function speak(text, priority = false, onEnd = null) {
-            if (!ttsEnabled || !text) {
+            if (!ttsEnabled || !text || !('speechSynthesis' in window)) {
                 if (onEnd) onEnd();
                 return;
             }
-            
-            // Cancel previous speech if priority
-            if (priority) {
-                window.speechSynthesis.cancel();
-            }
-            
+
+            if (priority) window.speechSynthesis.cancel();
+
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'id-ID';
             utterance.volume = voiceVolume;
             utterance.rate = voiceRate;
             utterance.pitch = 1;
-            
-            const originalOnEnd = onEnd;
-            utterance.onend = (e) => {
+
+            let ended = false;
+            const finish = () => {
+                if (ended) return;
+                ended = true;
                 restoreBgm();
-                if (originalOnEnd) originalOnEnd(e);
+                if (onEnd) onEnd();
             };
-            
-            // Try to find Indonesian voice
+            utterance.onend = finish;
+            utterance.onerror = finish;
+
             const voices = window.speechSynthesis.getVoices();
-            const indonesianVoice = voices.find(v => v.lang.includes('id')) || 
-                                   voices.find(v => v.lang.includes('ms')) ||
-                                   voices.find(v => v.lang.includes('en'));
-            if (indonesianVoice) {
-                utterance.voice = indonesianVoice;
-            }
-            
-            // Dim BGM before speaking
+            const voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('id')) ||
+                          voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ms'));
+            if (voice) utterance.voice = voice;
+
             dimBgm();
-            // Fallback restore in case onend doesn't fire (e.g. cancelled)
-            const estimatedDuration = (text.length * 150) / voiceRate + 600;
+            // Cadangan kalau onend tidak pernah dipanggil (misalnya suara dibatalkan
+            // atau mesin suaranya tidak ada): timer tetap harus jalan.
+            const estimatedDuration = (text.length * 90) / voiceRate + 1500;
             scheduleBgmRestore(estimatedDuration);
-            
+            if (onEnd) setTimeout(finish, estimatedDuration);
+
             window.speechSynthesis.speak(utterance);
-            
-            // Visual indicator
-            ttsIndicator.classList.add('active');
-            setTimeout(() => ttsIndicator.classList.remove('active'), 1000);
         }
-        
+
         function announcePoseStart(index, onEnd) {
-            const pose = workoutPoses[index];
-            speak(pose.tts.start, true, onEnd);
+            speak(normalizeTts(workoutPoses[index].tts), true, onEnd);
         }
-        
-        function announceRest() {
-            speak("Berhenti sejenak, atur nafas.", true);
-        }
-        
-        function announceRestCountdown(num) {
-            speak(`${num}`, true);
-        }
-        
-        // Timer Logic
+
+        // ── Alur latihan ──
         function startCountdown() {
             if (enabledPoseIds.length === 0) return;
-            
-            // Start background music
-            if (bgmAudio && musicEnabled) {
-                bgmAudio.volume = BGM_NORMAL_VOLUME;
-                bgmAudio.play().catch(err => console.log('BGM play blocked', err));
+
+            if (musicEnabled) {
+                const bgm = ensureBgm();
+                bgm.volume = BGM_NORMAL_VOLUME;
+                bgm.play().catch(err => console.log('Musik tidak bisa diputar', err));
             }
-            
+
+            workoutPoses = enabledPoses();
+            renderProgressStrip();
+            updatePoseDisplay(workoutPoses[0], workoutPoses[1] || null);
+            timerDisplay.textContent = poseDuration;
+            progressCircle.style.strokeDashoffset = 0;
+
             document.getElementById('startOverlay').classList.add('hidden');
             document.getElementById('countdownOverlay').classList.remove('hidden');
-            
+
             let count = 3;
             const countEl = document.getElementById('countdownNumber');
             countEl.textContent = count;
-            if (ttsEnabled) speak(`${count}`, true);
-            
-            const countInterval = setInterval(() => {
+            speak(`${count}`, true);
+
+            clearInterval(countInterval);
+            countInterval = setInterval(() => {
                 count--;
                 if (count > 0) {
                     countEl.textContent = count;
-                    if (ttsEnabled) speak(`${count}`, true);
+                    speak(`${count}`, true);
                 } else {
                     clearInterval(countInterval);
                     document.getElementById('countdownOverlay').classList.add('hidden');
@@ -1557,142 +2106,153 @@
                 }
             }, 1000);
         }
-        
+
+        async function requestWakeLock() {
+            if (!('wakeLock' in navigator)) return;
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+            } catch (err) {
+                wakeLock = null;
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release().catch(() => {});
+                wakeLock = null;
+            }
+        }
+
+        // Kunci layar lepas sendiri kalau tab disembunyikan; minta lagi saat kembali.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && isWorkoutActive) requestWakeLock();
+        });
+
         function startWorkout() {
             isWorkoutActive = true;
-            workoutPoses = poses.filter(p => enabledPoseIds.includes(p.id));
             currentPoseIndex = 0;
             isResting = false;
             isPaused = false;
-            btnStart.classList.add('hidden');
-            btnPause.classList.remove('hidden');
-            
-            // Request wake lock if available
-            if ('wakeLock' in navigator) {
-                navigator.wakeLock.request('screen').catch(err => console.log('Wake lock denied'));
-            }
-            
+            setPauseLabel();
+            requestWakeLock();
             startPose(0);
         }
-        
+
         function startPose(index) {
             currentPoseIndex = index;
             const pose = workoutPoses[index];
             timeLeft = poseDuration;
             totalTime = poseDuration;
             isResting = false;
-            
-            // Update UI
-            updatePoseDisplay(pose);
+
+            updatePoseDisplay(pose, workoutPoses[index + 1] || null);
             updateProgress(index);
-            nextPreview.style.opacity = index < workoutPoses.length - 1 ? '0.7' : '0';
-            if (index < workoutPoses.length - 1) {
-                nextPoseName.textContent = workoutPoses[index + 1].name;
-                if (nextPoseNameMobile) nextPoseNameMobile.textContent = workoutPoses[index + 1].name;
-            } else {
-                if (nextPoseNameMobile) nextPoseNameMobile.textContent = 'Selesai';
-            }
-            
-            // Visuals
-            currentCard.style.borderColor = pose.color;
+            timerDisplay.textContent = timeLeft;
+            progressCircle.style.strokeDashoffset = 0;
             progressCircle.style.stroke = pose.color;
-            phaseLabel.textContent = `Pose ${index + 1} dari ${workoutPoses.length}`;
-            pulseRing.style.display = 'block';
-            pulseRing.style.borderColor = pose.color;
-            
-            // TTS - start timer only after announcement finishes
+            phaseLabel.textContent = `Gerakan ${index + 1} dari ${workoutPoses.length}`;
+
+            // Timer baru jalan setelah kalimat panduannya selesai dibacakan.
             announcePoseStart(index, () => {
-                startTimer();
+                if (isWorkoutActive && !isResting && currentPoseIndex === index) startTimer();
             });
         }
-        
+
         function startRest() {
             isResting = true;
             timeLeft = restDuration;
             totalTime = restDuration;
-            
-            phaseLabel.textContent = "Berhenti Sejenak, Atur Nafas";
+
+            phaseLabel.textContent = 'Jeda, atur napas';
             timerDisplay.textContent = restDuration;
-            poseTitle.textContent = "Recovery";
-            poseIcon.textContent = "😮‍💨";
-            poseNumber.textContent = "Jeda antar pose";
-            instructionText.textContent = "Atur nafas. Tarik nafas dalam-dalam melalui hidung, hembuskan melalui mulut. Bersiap untuk pose berikutnya.";
-            
-            // Visual elements update during rest
-            if (currentPoseNameMobile) currentPoseNameMobile.textContent = "Berhenti Sejenak, Atur Nafas";
-            if (poseVisualImg) poseVisualImg.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='65' font-size='55' text-anchor='middle'>😮‍💨</text></svg>";
-            if (currentPoseBox) currentPoseBox.style.borderLeftColor = 'var(--color-rest)';
-            
-            currentCard.style.borderColor = 'var(--color-rest)';
+            progressCircle.style.strokeDashoffset = 0;
             progressCircle.style.stroke = 'var(--color-rest)';
-            pulseRing.style.display = 'none';
-            
-            announceRest();
-            
-            // Countdown 3-2-1 at end of rest
-            const delay3 = Math.max(0, (restDuration - 3) * 1000);
-            const delay2 = Math.max(0, (restDuration - 2) * 1000);
-            const delay1 = Math.max(0, (restDuration - 1) * 1000);
-            if (delay3 > 0) setTimeout(() => announceRestCountdown(3), delay3);
-            if (delay2 > 0) setTimeout(() => announceRestCountdown(2), delay2);
-            if (delay1 > 0) setTimeout(() => announceRestCountdown(1), delay1);
-            
+
+            currentPoseName.textContent = 'Jeda';
+            currentPoseAlias.textContent = 'Atur napas';
+            currentPoseBox.style.borderLeftColor = 'var(--color-rest)';
+            restVisual.classList.remove('hidden');
+
+            speak('Istirahat sebentar, atur napas.', true);
+
+            // Hitung mundur 3-2-1 menjelang gerakan berikutnya.
+            clearRestTimeouts();
+            [3, 2, 1].forEach(n => {
+                const delay = (restDuration - n) * 1000;
+                if (delay > 0) restTimeouts.push(setTimeout(() => { if (!isPaused) speak(`${n}`, true); }, delay));
+            });
+
             startTimer();
         }
-        
+
+        function clearRestTimeouts() {
+            restTimeouts.forEach(t => clearTimeout(t));
+            restTimeouts = [];
+        }
+
         function startTimer() {
             clearInterval(timerInterval);
-            
             timerInterval = setInterval(() => {
-                if (!isPaused) {
-                    timeLeft--;
-                    updateTimerDisplay();
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        handlePhaseEnd();
-                    }
+                if (isPaused) return;
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handlePhaseEnd();
                 }
             }, 1000);
         }
-        
+
         function updateTimerDisplay() {
             timerDisplay.textContent = timeLeft;
-            
-            // Circle progress
-            const circumference = 2 * Math.PI * 45; // r=45
+            const circumference = 2 * Math.PI * 45;
             const offset = circumference - (timeLeft / totalTime) * circumference;
             progressCircle.style.strokeDashoffset = offset;
-            
-            // Sound alerts at last 5 seconds
+
             if (timeLeft <= 5 && timeLeft > 1) {
                 playBeep();
             } else if (timeLeft === 1) {
                 playRelieve();
             }
         }
-        
-        function updatePoseDisplay(pose) {
-            poseNumber.textContent = `Pose ${currentPoseIndex + 1} dari ${workoutPoses.length}`;
-            poseTitle.textContent = pose.name;
-            poseIcon.textContent = pose.icon;
-            instructionText.textContent = pose.instruction;
-            
-            // Visual elements
-            if (currentPoseNameMobile) currentPoseNameMobile.textContent = pose.name;
-            if (poseVisualImg && pose.image) {
-                poseVisualImg.src = pose.image;
-            }
-            if (currentPoseBox && pose.color) {
-                currentPoseBox.style.borderLeftColor = pose.color;
+
+        function updatePoseDisplay(pose, next) {
+            currentPoseName.textContent = pose.name;
+            currentPoseAlias.textContent = pose.alias || '';
+            currentPoseBox.style.borderLeftColor = pose.color;
+            if (pose.image) poseVisualImg.src = pose.image;
+            restVisual.classList.add('hidden');
+            if (next) {
+                nextPoseName.textContent = next.name;
+                nextPoseAlias.textContent = next.alias || '';
+            } else {
+                nextPoseName.textContent = 'Selesai';
+                nextPoseAlias.textContent = 'Gerakan terakhir';
             }
         }
-        
+
+        // Tampilan saat belum latihan: gerakan pertama yang dipilih.
+        function showIdlePose() {
+            const list = enabledPoses();
+            if (list.length === 0) return;
+            updatePoseDisplay(list[0], list[1] || null);
+            currentPoseBox.style.borderLeftColor = list[0].color;
+        }
+
+        // ── Bunyi pendek dari Web Audio (tanpa berkas) ──
+        let audioCtx = null;
+        function getAudioCtx() {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return null;
+            if (!audioCtx) audioCtx = new Ctx();
+            if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+            return audioCtx;
+        }
+
         function playBeep() {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
+                const ctx = getAudioCtx();
+                if (!ctx) return;
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
@@ -1704,276 +2264,270 @@
                 osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.15);
             } catch (e) {
-                console.log('Audio beep failed', e);
+                console.log('Bunyi bip gagal', e);
             }
         }
-        
+
         function playRelieve() {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                
-                const osc1 = ctx.createOscillator();
-                const gain1 = ctx.createGain();
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(523.25, ctx.currentTime);
-                gain1.gain.setValueAtTime(0, ctx.currentTime);
-                gain1.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
-                gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-                osc1.start(ctx.currentTime);
-                osc1.stop(ctx.currentTime + 0.5);
-                
-                const osc2 = ctx.createOscillator();
-                const gain2 = ctx.createGain();
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
-                gain2.gain.setValueAtTime(0, ctx.currentTime + 0.1);
-                gain2.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.15);
-                gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.7);
-                osc2.start(ctx.currentTime + 0.1);
-                osc2.stop(ctx.currentTime + 0.7);
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                const notes = [[523.25, 0, 0.3, 0.5], [659.25, 0.1, 0.25, 0.7]];
+                notes.forEach(([freq, start, peak, end]) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+                    gain.gain.setValueAtTime(0, ctx.currentTime + start);
+                    gain.gain.linearRampToValueAtTime(peak, ctx.currentTime + start + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + end);
+                    osc.start(ctx.currentTime + start);
+                    osc.stop(ctx.currentTime + end);
+                });
             } catch (e) {
-                console.log('Audio relieve failed', e);
+                console.log('Bunyi penutup gagal', e);
             }
         }
-        
+
         function updateProgress(index) {
-            // Mark previous as completed
             for (let i = 0; i < index; i++) {
-                document.getElementById(`progress-${i}`).classList.add('completed');
-                document.getElementById(`progress-${i}`).classList.remove('active');
+                const el = document.getElementById(`progress-${i}`);
+                if (el) { el.classList.remove('active'); el.classList.add('completed'); }
             }
-            // Current active
             const current = document.getElementById(`progress-${index}`);
-            current.classList.add('active');
-            current.classList.remove('completed');
+            if (current) {
+                current.classList.add('active');
+                current.classList.remove('completed');
+            }
         }
-        
+
         function handlePhaseEnd() {
             if (!isResting) {
-                // End of pose - no end narration
                 if (currentPoseIndex < workoutPoses.length - 1) {
-                    // Start rest before next pose
                     startRest();
                 } else {
-                    // Workout complete
                     finishWorkout();
                 }
             } else {
-                // End of rest, start next pose
                 startPose(currentPoseIndex + 1);
             }
         }
-        
+
+        function setPauseLabel() {
+            btnPauseLabel.textContent = isPaused ? 'Lanjut' : 'Jeda';
+            btnPause.querySelector('use').setAttribute('href', isPaused ? '#i-play' : '#i-pause');
+        }
+
         function togglePause() {
+            if (!isWorkoutActive) return;
             isPaused = !isPaused;
-            btnPause.innerHTML = isPaused ? '▶️ Lanjut' : '⏸️ Pause';
-            
+            setPauseLabel();
+
             if (isPaused) {
-                window.speechSynthesis.pause();
-                phaseLabel.textContent += " (Dijeda)";
+                if ('speechSynthesis' in window) window.speechSynthesis.pause();
+                if (bgmAudio) bgmAudio.pause();
+                phaseLabel.textContent += ' (dijeda)';
             } else {
-                window.speechSynthesis.resume();
-                phaseLabel.textContent = phaseLabel.textContent.replace(" (Dijeda)", "");
+                if ('speechSynthesis' in window) window.speechSynthesis.resume();
+                if (bgmAudio && musicEnabled) bgmAudio.play().catch(() => {});
+                phaseLabel.textContent = phaseLabel.textContent.replace(' (dijeda)', '');
             }
         }
-        
+
+        function stopWorkout() {
+            if (!isWorkoutActive) return;
+            if (!confirm('Hentikan latihan dan kembali ke pengaturan?')) return;
+            resetWorkout(false);
+        }
+
         function finishWorkout() {
             isWorkoutActive = false;
             clearInterval(timerInterval);
-            
+            clearRestTimeouts();
+            releaseWakeLock();
+
             const activeSeconds = workoutPoses.length * poseDuration;
             const restSeconds = Math.max(0, (workoutPoses.length - 1) * restDuration);
             const totalSeconds = activeSeconds + restSeconds + 3;
             const mins = Math.floor(totalSeconds / 60);
             const secs = totalSeconds % 60;
-            
+
             document.getElementById('finishPoseCount').textContent = workoutPoses.length;
             document.getElementById('totalTimeStat').textContent = mins + ':' + (secs < 10 ? '0' + secs : secs);
             document.getElementById('activeTimeStat').textContent = activeSeconds;
-            
+
             document.getElementById('finishOverlay').classList.remove('hidden');
-            if (ttsEnabled) speak("Selamat! Latihan core transformation berhasil diselesaikan. Beristirahat dan rehidrasi.", true);
+            speak('Selesai. Semua gerakan sudah dijalani. Minum dulu, lalu istirahat.', true);
         }
-        
-        function resetWorkout() {
-            document.getElementById('finishOverlay').classList.add('hidden');
-            document.getElementById('startOverlay').classList.remove('hidden');
-            btnStart.classList.remove('hidden');
-            btnPause.classList.add('hidden');
+
+        // ulangi=true: langsung mulai lagi dengan pengaturan yang sama.
+        function resetWorkout(ulangi) {
+            isWorkoutActive = false;
+            isPaused = false;
+            clearInterval(timerInterval);
+            clearInterval(countInterval);
+            clearRestTimeouts();
+            releaseWakeLock();
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             if (bgmAudio) {
                 bgmAudio.pause();
                 bgmAudio.currentTime = 0;
             }
-            
-            // Reset displays
+
+            document.getElementById('finishOverlay').classList.add('hidden');
+            document.getElementById('countdownOverlay').classList.add('hidden');
+            setPauseLabel();
+
             timerDisplay.textContent = poseDuration;
             progressCircle.style.strokeDashoffset = 0;
+            progressCircle.style.stroke = '';
             currentPoseIndex = -1;
-            phaseLabel.textContent = "Persiapan";
-            const firstEnabled = poses.find(p => enabledPoseIds.includes(p.id));
-            if (poseVisualImg && firstEnabled && firstEnabled.image) {
-                poseVisualImg.src = firstEnabled.image;
+            phaseLabel.textContent = 'Persiapan';
+            renderProgressStrip();
+            showIdlePose();
+
+            if (ulangi) {
+                startCountdown();
+            } else {
+                document.getElementById('startOverlay').classList.remove('hidden');
             }
-            if (currentPoseNameMobile && firstEnabled) currentPoseNameMobile.textContent = firstEnabled.name;
-            
-            const enabledPosesList = poses.filter(p => enabledPoseIds.includes(p.id));
-            if (nextPoseNameMobile && enabledPosesList.length > 1) {
-                nextPoseNameMobile.textContent = enabledPosesList[1].name;
-            } else if (nextPoseNameMobile) {
-                nextPoseNameMobile.textContent = 'Selesai';
-            }
-            
-            // Clear progress strip
-            document.querySelectorAll('.progress-item').forEach(el => {
-                el.classList.remove('completed', 'active');
-            });
         }
-        
-        // Settings Functions
+
+        // ── Teks panduan suara ──
         function openSettings() {
             const modal = document.getElementById('settingsModal');
             const content = document.getElementById('settingsContent');
-            
+
             content.innerHTML = '';
             poses.forEach((pose, index) => {
                 const group = document.createElement('div');
-                group.style.marginBottom = '20px';
-                group.style.padding = '15px';
-                group.style.background = 'rgba(255,255,255,0.03)';
-                group.style.borderRadius = '12px';
-                group.style.borderLeft = `4px solid ${pose.color}`;
-                
+                group.className = 'tts-group';
+                group.style.borderLeftColor = pose.color;
                 group.innerHTML = `
-                    <h3 style="margin-bottom: 10px; color: ${pose.color};">${index + 1}. ${pose.name}</h3>
-                    
-                    <div class="form-group">
-                        <textarea id="tts-${pose.id}-start" placeholder="Contoh: High pleng. Posisi telapak tangan lurus. Mulai.">${pose.tts.start}</textarea>
-                        <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 4px;">Pastikan ada kata <strong>Mulai</strong> di akhir agar timer berjalan setelah instruksi selesai.</div>
-                    </div>
-                    <button class="btn btn-secondary" style="width: 100%;" onclick="testPoseTTS('${pose.id}')">
-                        🔊 Test Suara Pose Ini
+                    <h3 style="color: ${pose.color};">${index + 1}. ${pose.name} <small>(${pose.alias})</small></h3>
+                    <textarea id="tts-${pose.id}" aria-label="Teks panduan ${pose.name}"></textarea>
+                    <button class="btn btn-secondary" onclick="testPoseTTS('${pose.id}')">
+                        <svg class="ic"><use href="#i-volume"></use></svg>
+                        <span>Coba dengarkan</span>
                     </button>
                 `;
-                
+                group.querySelector('textarea').value = pose.tts;
                 content.appendChild(group);
             });
-            
+
             modal.classList.add('active');
-        }
-        
-        function closeSettings() {
-            // Save settings
-            poses.forEach(pose => {
-                pose.tts.start = document.getElementById(`tts-${pose.id}-start`).value;
-                localStorage.setItem(`tts_${pose.id}`, JSON.stringify(pose.tts));
+            // Tinggi kotak teks mengikuti isinya supaya kalimatnya terbaca utuh.
+            content.querySelectorAll('textarea').forEach(t => {
+                t.style.height = 'auto';
+                t.style.height = (t.scrollHeight + 2) + 'px';
             });
-            
+        }
+
+        function closeSettings() {
+            const modal = document.getElementById('settingsModal');
+            if (!modal.classList.contains('active')) return;
+            poses.forEach(pose => {
+                const el = document.getElementById(`tts-${pose.id}`);
+                if (!el) return;
+                const text = el.value.trim();
+                pose.tts = text || DEFAULT_TTS[pose.id];
+                if (text && text !== DEFAULT_TTS[pose.id]) {
+                    localStorage.setItem(TTS_KEY + pose.id, text);
+                } else {
+                    localStorage.removeItem(TTS_KEY + pose.id);
+                }
+            });
+
             localStorage.setItem('voiceVolume', voiceVolume);
             localStorage.setItem('voiceRate', voiceRate);
-            
-            document.getElementById('settingsModal').classList.remove('active');
+
+            modal.classList.remove('active');
         }
-        
+
+        function resetTtsTexts() {
+            poses.forEach(pose => {
+                const el = document.getElementById(`tts-${pose.id}`);
+                if (el) el.value = DEFAULT_TTS[pose.id];
+                localStorage.removeItem(TTS_KEY + pose.id);
+                pose.tts = DEFAULT_TTS[pose.id];
+            });
+        }
+
         function testPoseTTS(poseId) {
-            const pose = poses.find(p => p.id === poseId);
-            const startText = document.getElementById(`tts-${poseId}-start`).value;
-            speak(startText, true);
+            const text = document.getElementById(`tts-${poseId}`).value;
+            speak(normalizeTts(text), true);
         }
-        
+
         function testVoiceSettings() {
-            speak("Ini adalah contoh suara panduan plank trainer. Sesuaikan volume dan kecepatan sesuai preferensi Anda.", true);
+            speak('Ini contoh suara panduan. Atur volume dan kecepatannya sampai enak didengar.', true);
         }
-        
+
         function loadSettings() {
-            const savedVol = localStorage.getItem('voiceVolume');
-            const savedRate = localStorage.getItem('voiceRate');
-            
-            if (savedVol !== null) {
-                voiceVolume = parseFloat(savedVol);
+            const savedVol = parseFloat(localStorage.getItem('voiceVolume'));
+            const savedRate = parseFloat(localStorage.getItem('voiceRate'));
+
+            if (!isNaN(savedVol)) {
+                voiceVolume = savedVol;
                 document.getElementById('volumeSlider').value = voiceVolume;
                 document.getElementById('volumeValue').textContent = Math.round(voiceVolume * 100) + '%';
             }
-            
-            if (savedRate !== null) {
-                voiceRate = parseFloat(savedRate);
+
+            if (!isNaN(savedRate)) {
+                voiceRate = savedRate;
                 document.getElementById('rateSlider').value = voiceRate;
                 document.getElementById('rateValue').textContent = voiceRate + 'x';
             }
         }
-        
-        // Keyboard shortcuts
+
+        // ── Papan ketik ──
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
+            if (e.code === 'Space' && isWorkoutActive && !e.target.matches('textarea, input, button')) {
                 e.preventDefault();
-                if (isWorkoutActive) togglePause();
+                togglePause();
             }
+            if (e.key === 'Escape') closeSettings();
         });
-        
-        // PWA Install detection
+
+        // ── Pasang di HP ──
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             checkInstallStatus();
         });
-        
+
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            checkInstallStatus();
+        });
+
         function checkInstallStatus() {
             const installBtn = document.getElementById('installBtn');
             const iosHint = document.getElementById('iosHint');
-            
-            // Check if already running as installed PWA
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            
-            if (isStandalone) {
-                // Already installed and running from home screen
-                installBtn.style.display = 'none';
-                iosHint.style.display = 'none';
-                return;
-            }
-            
-            // Not in standalone mode - show install option if available
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            
-            if (deferredPrompt) {
-                // Android/Chrome supports beforeinstallprompt
-                installBtn.style.display = 'inline-flex';
-                iosHint.style.display = 'none';
-            } else if (isIOS) {
-                // iOS Safari hint
-                installBtn.style.display = 'none';
-                iosHint.style.display = 'block';
-            } else {
-                // Other browsers - hide both or show button if we want
-                installBtn.style.display = 'none';
-                iosHint.style.display = 'none';
-            }
+
+            installBtn.classList.toggle('hidden', isStandalone || !deferredPrompt);
+            iosHint.classList.toggle('hidden', isStandalone || !isIOS || !!deferredPrompt);
         }
-        
+
         async function promptInstall() {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                deferredPrompt = null;
-                checkInstallStatus();
-            }
+            if (outcome === 'accepted') deferredPrompt = null;
+            checkInstallStatus();
         }
-        
-        // Init
+
+        // Service worker: supaya aplikasi tetap terbuka tanpa internet setelah dipasang.
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+
         window.addEventListener('load', init);
-        
-        // Prevent screen sleep (fallback)
-        setInterval(() => {
-            if (isWorkoutActive && !isPaused) {
-                // Keep screen alive trick
-                document.title = document.title;
-            }
-        }, 10000);
     </script>
 </body>
 </html>

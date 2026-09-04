@@ -1,0 +1,8 @@
+# Alat lokal, bukan bagian situs
+Buka Aplikasi Lokal.bat
+.claude/
+.wrangler/
+node_modules/
+Thumbs.db
+.DS_Store
+_laporan-upgrade-*/
